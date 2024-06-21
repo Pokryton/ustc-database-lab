@@ -9,6 +9,10 @@ Title = models.IntegerChoices(
 
 CourseKind = models.IntegerChoices("CourseKind", "本科生课程 研究生课程")
 
+ProjectKind = models.IntegerChoices(
+    "ProjectKind", "国家级项目 省部级项目 市厅级项目 企业合作项目 其它类型项目"
+)
+
 Semester = models.IntegerChoices("Semester", "春季学期 夏季学期 秋季学期")
 
 PAPER_KIND_CHOICES = [
@@ -53,7 +57,7 @@ class Project(models.Model):
     id = models.CharField(max_length=256, primary_key=True)
     name = models.CharField(max_length=256)
     source = models.CharField(max_length=256)
-    kind = models.IntegerField()
+    kind = models.IntegerField(choices=ProjectKind.choices)
     total_fund = models.FloatField()
     start_year = models.IntegerField()
     end_year = models.IntegerField()
