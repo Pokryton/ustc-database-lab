@@ -76,8 +76,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        # "OPTIONS": {
+        #     "read_default_file": "~/my.cnf"
+        # },
+        # TODO
+        "NAME": "teacher_app",
+        "USER": "root",
+        "PASSWORD": "123456",
     }
 }
 
