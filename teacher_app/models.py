@@ -70,7 +70,7 @@ class Project(models.Model):
 class Paper(models.Model):
     id = models.IntegerField(primary_key=True, verbose_name="序号")
     title = models.CharField(max_length=256, verbose_name="论文名称")
-    pub_sourse = models.CharField(max_length=256, verbose_name="发表源")
+    pub_source = models.CharField(max_length=256, verbose_name="发表源")
     pub_year = models.DateField(verbose_name="发表年份")
     kind = models.IntegerField(choices=PAPER_KIND_CHOICES, verbose_name="类型")
     level = models.IntegerField(choices=PAPER_LEVEL_CHOICES, verbose_name="级别")
