@@ -33,20 +33,20 @@ PAPER_LEVEL_CHOICES = [
 
 
 class Teacher(models.Model):
-    id = models.CharField(max_length=5, primary_key=True)
-    name = models.CharField(max_length=200)
-    gender = models.IntegerField(choices=Gender.choices)
-    title = models.IntegerField(choices=Title.choices)
+    id = models.CharField(max_length=5, primary_key=True, verbose_name="工号")
+    name = models.CharField(max_length=200, verbose_name="姓名")
+    gender = models.IntegerField(choices=Gender.choices, verbose_name="性别")
+    title = models.IntegerField(choices=Title.choices, verbose_name="职称")
 
     def __str__(self):
         return f"{self.id} {self.name}"
 
 
 class Course(models.Model):
-    id = models.CharField(max_length=256, primary_key=True)
-    name = models.CharField(max_length=256)
-    hours = models.IntegerField()
-    kind = models.IntegerField(choices=CourseKind.choices)
+    id = models.CharField(max_length=256, primary_key=True, verbose_name="课程号")
+    name = models.CharField(max_length=256, verbose_name="课程名")
+    hours = models.IntegerField(verbose_name="总学时")
+    kind = models.IntegerField(choices=CourseKind.choices, verbose_name="课程性质")
     teachers = models.ManyToManyField(Teacher, through="TeacherCourse")
 
     def __str__(self):
@@ -54,13 +54,13 @@ class Course(models.Model):
 
 
 class Project(models.Model):
-    id = models.CharField(max_length=256, primary_key=True)
-    name = models.CharField(max_length=256)
-    source = models.CharField(max_length=256)
-    kind = models.IntegerField(choices=ProjectKind.choices)
-    total_fund = models.FloatField()
-    start_year = models.IntegerField()
-    end_year = models.IntegerField()
+    id = models.CharField(max_length=256, primary_key=True, verbose_name="项目号")
+    name = models.CharField(max_length=256, verbose_name="项目名称")
+    source = models.CharField(max_length=256, verbose_name="项目来源")
+    kind = models.IntegerField(choices=ProjectKind.choices, verbose_name="项目类型")
+    total_fund = models.FloatField(verbose_name="总经费")
+    start_year = models.IntegerField(verbose_name="开始年份")
+    end_year = models.IntegerField(verbose_name="结束年份")
     teachers = models.ManyToManyField(Teacher, through="TeacherProject")
 
     def __str__(self):
@@ -68,12 +68,12 @@ class Project(models.Model):
 
 
 class Paper(models.Model):
-    id = models.IntegerField(primary_key=True)
-    title = models.CharField(max_length=256)
-    pub_sourse = models.CharField(max_length=256)
-    pub_year = models.DateField()
-    kind = models.IntegerField(choices=PAPER_KIND_CHOICES)
-    level = models.IntegerField(choices=PAPER_LEVEL_CHOICES)
+    id = models.IntegerField(primary_key=True, verbose_name="序号")
+    title = models.CharField(max_length=256, verbose_name="论文名称")
+    pub_sourse = models.CharField(max_length=256, verbose_name="发表源")
+    pub_year = models.DateField(verbose_name="发表年份")
+    kind = models.IntegerField(choices=PAPER_KIND_CHOICES, verbose_name="类型")
+    level = models.IntegerField(choices=PAPER_LEVEL_CHOICES, verbose_name="级别")
     teachers = models.ManyToManyField(Teacher, through="TeacherPaper")
 
     def __str(self):
@@ -83,9 +83,9 @@ class Paper(models.Model):
 class TeacherCourse(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
     course = models.ForeignKey("Course", on_delete=models.CASCADE)
-    year = models.IntegerField()
-    semester = models.IntegerField(choices=Semester.choices)
-    hour = models.IntegerField()
+    year = models.IntegerField(verbose_name="年份")
+    semester = models.IntegerField(choices=Semester.choices, verbose_name="学期")
+    hour = models.IntegerField(verbose_name="学时")
 
     class Meta:
         constraints = [
@@ -102,8 +102,8 @@ class TeacherCourse(models.Model):
 class TeacherProject(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
-    rank = models.IntegerField()
-    fund = models.FloatField()
+    rank = models.IntegerField(verbose_name="排名")
+    fund = models.FloatField(verbose_name="承担经费")
 
     class Meta:
         constraints = [
@@ -120,8 +120,8 @@ class TeacherProject(models.Model):
 class TeacherPaper(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
     paper = models.ForeignKey("Paper", on_delete=models.CASCADE)
-    rank = models.IntegerField()
-    corresp = models.BooleanField()
+    rank = models.IntegerField(verbose_name="排名")
+    corresp = models.BooleanField(verbose_name="是否通讯作者")
 
     class Meta:
         constraints = [
