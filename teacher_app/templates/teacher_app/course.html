@@ -1,0 +1,33 @@
+{% extends "teacher_app/base.html" %}
+{% block content %}
+
+<a class="btn btn-primary" href="{% url 'course-add' %}" role="button">添加</a>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">课程号</th>
+      <th scope="col">课程名称</th>
+      <th scope="col">学时数</th>
+      <th scope="col">课程性质</th>
+      <th scope="col">操作</th>
+    </tr>
+  </thead>
+
+    {% for course in course_list %}
+    <tr>
+      <th scope="row">{{ course.id }}</th>
+      <td>{{ course.name }}</td>
+      <td>{{ course.hours }}</td>
+      <td>{{ course.get_kind_display }}</td>
+      <td>
+        <div class="btn-group" role="group">
+          <a role="button" class="btn btn-primary" href="{% url 'course-detail' course.id %}" >详情</a>
+          <a role="button" class="btn btn-primary" href="#" >删除</a>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}

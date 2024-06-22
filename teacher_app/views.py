@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.views.generic import ListView, DetailView, CreateView
+from django.db import transaction
 
-from .models import Teacher
-from .forms import TeacherForm
+from .models import Teacher, Course
+from .forms import TeacherForm, CourseForm, TeacherCourseFormSet
 
 def index(request):
-    context = {}
-    return render(request, "teacher_app/index.html", context)
+    return render(request, "teacher_app/index.html")
 
 
 def teacher_search(request):
@@ -31,3 +32,42 @@ def teacher_add(request):
         form = TeacherForm(label_suffix="")
 
     return render(request, "teacher_app/teacher_add.html", {"form": form})
+
+
+class CourseListView(ListView):
+    model = Course
+    template_name = "teacher_app/course.html"
+    context_object_name = "course_list"
+    ordering = ["id"]
+
+
+class CourseDetailView(DetailView):
+    model = Course
+    template_name = "teacher_app/course_detail.html"
+    context_object_name = "course"
+
+
+class CourseCreateView(CreateView):
+    model = Course
+    fields = ["id", "name", "hours", "kind"]
+    success_url = "/course/"
+
+    def get_context_data(self, **kwargs):
+        data = super(CourseCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            data["formset"] = TeacherCourseFormSet(self.request.POST)
+        else:
+            data["formset"] = TeacherCourseFormSet()
+        return data
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+
+        with transaction.atomic():
+            self.object = form.save()
+
+            if formset.is_valid():
+                formset.instance = self.object
+                formset.save()
+        return super(CourseCreateView, self).form_valid(form)

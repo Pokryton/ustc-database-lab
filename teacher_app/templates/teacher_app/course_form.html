@@ -1,0 +1,53 @@
+{% extends "teacher_app/base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<form method="POST">
+  {% csrf_token %}
+  {{ form|crispy }}
+
+  <h2>授课教师</h2>
+
+  <table class="table">
+    {{ formset.management_form }}
+
+    {% for form in formset.forms %}
+    {% if forloop.first %}
+    <thead>
+      <tr>
+        {% for field in form.visible_fields %}
+        <th>{{ field.label }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    {% endif %}
+    <tr class="formset_row">
+      {% for field in form.visible_fields %}
+      <td>
+        {{ field.errors.as_ul }}
+        {{ field }}
+      </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
+
+  <div>
+    
+  </div>
+  <br>
+  <div class="auto-me">
+    <button class="btn btn-primary" type="submit">确认</button>
+  </div>
+
+  <script type="text/javascript">
+    $(".formset_row").formset({
+      addText: 'add',
+      deleteText: 'remove',
+      prefix: "teacher_course_set"
+    });
+  </script>
+</form>
+
+{% endblock content %}
