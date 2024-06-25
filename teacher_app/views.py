@@ -1,13 +1,22 @@
-from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    DeleteView,
+    UpdateView,
+)
 from django.db import transaction
 
-from .models import Teacher, Course
-from .forms import TeacherForm, CourseForm, TeacherCourseFormSet
+from .models import *
+from .forms import *
+
 
 def index(request):
-    return render(request, "teacher_app/index.html")
+    return redirect(reverse_lazy("teacher"))
 
 
 def teacher_search(request):
@@ -26,12 +35,18 @@ def teacher_add(request):
         form = TeacherForm(request.POST)
         if form.is_valid():
             teacher = form.save()
-            messages.success(request, f"教师 {teacher} 登记成功！")
+            messages.success(request, f"教师 {teacher.name} 登记成功！")
             return redirect("teacher")
     else:
         form = TeacherForm(label_suffix="")
 
     return render(request, "teacher_app/teacher_add.html", {"form": form})
+
+
+def teacher_detail(request, pk):
+    teacher_info = Teacher.objects.filter(pk=pk).first()
+    teacher_course = TeacherCourse.objects.filter(teacher__id=pk).first()
+    return render(request, "teacher_app/teacher_detail.html", {"form": form})
 
 
 class CourseListView(ListView):
@@ -47,27 +62,50 @@ class CourseDetailView(DetailView):
     context_object_name = "course"
 
 
-class CourseCreateView(CreateView):
+def course_create(request):
+    if request.method == "POST":
+        form = CourseForm(request.POST)
+        formset = TeacherCourseFormSet(request.POST)
+
+        if form.is_valid() and formset.is_valid():
+            course = form.save()
+            formset.instance = course
+            formset.save()
+            messages.success(request, f"课程 {course.name} 登记成功！")
+            return redirect(reverse_lazy("course"))
+    else:
+        form = CourseForm()
+        formset = TeacherCourseFormSet()
+
+    return render(
+        request, "teacher_app/course_form.html", {"form": form, "formset": formset}
+    )
+
+
+def course_update(request, course_id):
+    course = get_object_or_404(Course, pk=course_id)
+
+    form = CourseForm(request.POST or None, instance=course)
+    form.fields["id"].disabled = True
+    formset = TeacherCourseFormSet(request.POST or None, instance=course)
+
+    if request.method == "POST":
+        if form.is_valid() and formset.is_valid():
+            course = form.save()
+            formset.instance = course
+            formset.save()
+            messages.success(request, f"课程 {course.name} 更新成功！")
+            return redirect(reverse_lazy("course"))
+        messages.warning(
+            request, f"课程 {course.name} 更新不成功！<br> {formset.errors}"
+        )
+
+    return render(
+        request, "teacher_app/course_form.html", {"form": form, "formset": formset}
+    )
+
+
+# def course_delete(request, course_id):
+class CourseDeleteView(DeleteView):
     model = Course
-    fields = ["id", "name", "hours", "kind"]
-    success_url = "/course/"
-
-    def get_context_data(self, **kwargs):
-        data = super(CourseCreateView, self).get_context_data(**kwargs)
-        if self.request.POST:
-            data["formset"] = TeacherCourseFormSet(self.request.POST)
-        else:
-            data["formset"] = TeacherCourseFormSet()
-        return data
-
-    def form_valid(self, form):
-        context = self.get_context_data()
-        formset = context['formset']
-
-        with transaction.atomic():
-            self.object = form.save()
-
-            if formset.is_valid():
-                formset.instance = self.object
-                formset.save()
-        return super(CourseCreateView, self).form_valid(form)
+    success_url = reverse_lazy("course")

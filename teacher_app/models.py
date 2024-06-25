@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 Gender = models.IntegerChoices("Gender", "男 女")
 
@@ -38,6 +39,9 @@ class Teacher(models.Model):
     gender = models.IntegerField(choices=Gender.choices, verbose_name="性别")
     title = models.IntegerField(choices=Title.choices, verbose_name="职称")
 
+    class Meta:
+        verbose_name = "教师"
+
     def __str__(self):
         return f"{self.id} {self.name}"
 
@@ -45,7 +49,7 @@ class Teacher(models.Model):
 class Course(models.Model):
     id = models.CharField(max_length=256, primary_key=True, verbose_name="课程号")
     name = models.CharField(max_length=256, verbose_name="课程名")
-    hours = models.IntegerField(verbose_name="总学时")
+    hours = models.PositiveIntegerField(verbose_name="总学时")
     kind = models.IntegerField(choices=CourseKind.choices, verbose_name="课程性质")
     teachers = models.ManyToManyField(Teacher, through="TeacherCourse")
 
@@ -59,8 +63,8 @@ class Project(models.Model):
     source = models.CharField(max_length=256, verbose_name="项目来源")
     kind = models.IntegerField(choices=ProjectKind.choices, verbose_name="项目类型")
     total_fund = models.FloatField(verbose_name="总经费")
-    start_year = models.IntegerField(verbose_name="开始年份")
-    end_year = models.IntegerField(verbose_name="结束年份")
+    start_year = models.PositiveIntegerField(verbose_name="开始年份")
+    end_year = models.PositiveIntegerField(verbose_name="结束年份")
     teachers = models.ManyToManyField(Teacher, through="TeacherProject")
 
     def __str__(self):
@@ -68,7 +72,7 @@ class Project(models.Model):
 
 
 class Paper(models.Model):
-    id = models.IntegerField(primary_key=True, verbose_name="序号")
+    id = models.PositiveIntegerField(primary_key=True, verbose_name="序号")
     title = models.CharField(max_length=256, verbose_name="论文名称")
     pub_source = models.CharField(max_length=256, verbose_name="发表源")
     pub_year = models.DateField(verbose_name="发表年份")
@@ -76,24 +80,16 @@ class Paper(models.Model):
     level = models.IntegerField(choices=PAPER_LEVEL_CHOICES, verbose_name="级别")
     teachers = models.ManyToManyField(Teacher, through="TeacherPaper")
 
-    def __str(self):
+    def __str__(self):
         return f"{self.id} {self.title}"
 
 
 class TeacherCourse(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
     course = models.ForeignKey("Course", on_delete=models.CASCADE)
-    year = models.IntegerField(verbose_name="年份")
+    year = models.PositiveIntegerField(verbose_name="年份")
     semester = models.IntegerField(choices=Semester.choices, verbose_name="学期")
-    hour = models.IntegerField(verbose_name="学时")
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["teacher", "course"],
-                name="unique_teacher_course",
-            )
-        ]
+    hour = models.PositiveIntegerField(verbose_name="学时")
 
     def __str__(self):
         return f"{self.teacher.id} {self.course.id}"
@@ -102,7 +98,7 @@ class TeacherCourse(models.Model):
 class TeacherProject(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
     project = models.ForeignKey("Project", on_delete=models.CASCADE)
-    rank = models.IntegerField(verbose_name="排名")
+    rank = models.PositiveIntegerField(verbose_name="排名")
     fund = models.FloatField(verbose_name="承担经费")
 
     class Meta:
@@ -110,6 +106,10 @@ class TeacherProject(models.Model):
             models.UniqueConstraint(
                 fields=["teacher", "project"],
                 name="unique_teacher_project",
+            ),
+            models.UniqueConstraint(
+                fields=["project", "rank"],
+                name="unique_project_rank",
             )
         ]
 
@@ -120,7 +120,7 @@ class TeacherProject(models.Model):
 class TeacherPaper(models.Model):
     teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
     paper = models.ForeignKey("Paper", on_delete=models.CASCADE)
-    rank = models.IntegerField(verbose_name="排名")
+    rank = models.PositiveIntegerField(verbose_name="排名")
     corresp = models.BooleanField(verbose_name="是否通讯作者")
 
     class Meta:
@@ -128,6 +128,15 @@ class TeacherPaper(models.Model):
             models.UniqueConstraint(
                 fields=["teacher", "paper"],
                 name="unique_teacher_paper",
+            ),
+            models.UniqueConstraint(
+                fields=["paper", "rank"],
+                name="unique_paper_rank",
+            ),
+            models.UniqueConstraint(
+                fields=["paper"],
+                condition=Q(corresp=True),
+                name="unique_paper_corresp",
             )
         ]
 

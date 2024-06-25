@@ -4,14 +4,21 @@
 <div class="d-flex gap-5">
   <form method="POST" class="row row-cols-lg-auto g-3 align-items-center">
     {% csrf_token %}
-    <div class="col-12">
+    <div class="col">
       <input class="form-control" type="search" placeholder="工号" name="id">
     </div>
-    <button class="btn btn-success" type="submit">搜索</button>
+    <div class="col">
+      <input class="form-control" type="search" placeholder="起始年份" name="start_year">
+    </div>
+    <div class="col">
+      <input class="form-control" type="search" placeholder="终止年份" name="end_year">
+    </div>
+    <button class="btn btn-success col" type="submit">搜索</button>
   </form>
 
-  <a class="btn btn-primary" href="{% url 'teacher-add' %}" role="button">添加</a>
 </div>
+
+<a class="btn btn-primary" href="{% url 'teacher-add' %}" role="button">添加</a>
 
 <table class="table">
   <thead>
@@ -30,7 +37,7 @@
       <td>{{ teacher.name }}</td>
       <td>{{ teacher.get_gender_display }}</td>
       <td>{{ teacher.get_title_display }}</td>
-      <td><a class="btn btn-primary" href="{% url 'teacher-add' %}" role="button">查看</a></td>
+      <td><a class="btn btn-primary" href="{% url 'teacher-detail' teacher.id %}" role="button">查看</a></td>
     </tr>
     {% endfor %}
 </table>

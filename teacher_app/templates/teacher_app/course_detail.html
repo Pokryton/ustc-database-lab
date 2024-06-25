@@ -1,7 +1,7 @@
 {% extends "teacher_app/base.html" %}
 {% block content %}
 
-<a class="btn btn-primary" href="{% url 'course-add' %}" role="button">添加</a>
+<h2>课程信息</h2>
 
 <table class="table">
   <thead>
@@ -21,7 +21,7 @@
   </tr>
 </table>
 
-授课教师：
+<h2>授课教师</h2>
 
 <table class="table">
   <thead>
@@ -32,16 +32,17 @@
       <th scope="col">授课学期</th>
       <th scope="col">学时数</th>
     </tr>
-    {% for teacher in course.teachers.all %}
+
+    {% for record in course.teachercourse_set.all %}
     <tr>
-      <th scope="col">{{ teacher.id }}</th>
-      <th>{{ teacher.name }}</th>
+      <td scope="col">{{ record.teacher.id }}</td>
+      <td>{{ record.teacher.name }}</td>
+      <td>{{ record.year }}</td>
+      <td>{{ record.get_semester_display }}</td>
+      <td>{{ record.hour }}</td>
     </tr>
     {% endfor %}
   </thead>
-
-  <tr>
-  </tr>
 </table>
 
 {% endblock content %}

@@ -1,11 +1,14 @@
 {% extends "teacher_app/base.html" %}
-{% load crispy_forms_tags %}
+{% load django_bootstrap5 %}
 
 {% block content %}
 
 <form method="POST">
   {% csrf_token %}
-  {{ form|crispy }}
+
+  <h2>课程信息</h2>
+
+  {% bootstrap_form form layout="horizontal" %}
 
   <h2>授课教师</h2>
 
@@ -21,33 +24,32 @@
         {% endfor %}
       </tr>
     </thead>
+    <tbody>
     {% endif %}
-    <tr class="formset_row">
-      {% for field in form.visible_fields %}
-      <td>
-        {{ field.errors.as_ul }}
-        {{ field }}
-      </td>
-      {% endfor %}
-    </tr>
+      <tr class="formset_row">
+        {% for hidden in form.hidden_fields %}
+          {{ hidden }}
+        {% endfor %}
+        {% for field in form.visible_fields %}
+          <td>
+            {% bootstrap_field field show_label=False %}
+          </td>
+        {% endfor %}
+      </tr>
     {% endfor %}
+    </tbody>
   </table>
 
-  <div>
-    
-  </div>
-  <br>
-  <div class="auto-me">
-    <button class="btn btn-primary" type="submit">确认</button>
+  {% bootstrap_formset_errors formset %}
+
+  <div class="mb-3">
+    <button id="add-more" class="btn btn-primary" type="button">添加教师</button>
   </div>
 
-  <script type="text/javascript">
-    $(".formset_row").formset({
-      addText: 'add',
-      deleteText: 'remove',
-      prefix: "teacher_course_set"
-    });
-  </script>
+  <div class="auto-me">
+    <button class="btn btn-primary" type="submit">确认</button>
+    <button class="btn btn-primary" type="reset">重置</button>
+  </div>
 </form>
 
 {% endblock content %}
