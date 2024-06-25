@@ -16,23 +16,21 @@
     {{ formset.management_form }}
 
     {% for form in formset.forms %}
-    {% if forloop.first %}
-    <thead>
-      <tr>
-        {% for field in form.visible_fields %}
-        <th>{{ field.label }}</th>
-        {% endfor %}
-      </tr>
-    </thead>
+      {% if forloop.first %}
+        <thead>
+          {% for field in form.visible_fields %}
+            <th>{{ field.label }}</th>
+          {% endfor %}
+        </thead>
     <tbody>
-    {% endif %}
+      {% endif %}
       <tr class="formset_row">
         {% for hidden in form.hidden_fields %}
           {{ hidden }}
         {% endfor %}
         {% for field in form.visible_fields %}
           <td>
-            {% bootstrap_field field show_label=False %}
+            {% bootstrap_field field wrapper_class="my-1" show_label=False %}
           </td>
         {% endfor %}
       </tr>
