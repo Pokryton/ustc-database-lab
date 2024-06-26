@@ -63,19 +63,19 @@ class CourseDetailView(DetailView):
 
 
 def course_create(request):
-    if request.method == "POST":
-        form = CourseForm(request.POST)
-        formset = TeacherCourseFormSet(request.POST)
+    form = CourseForm(request.POST or None)
+    formset = TeacherCourseFormSet(request.POST or None)
 
-        if form.is_valid() and formset.is_valid():
-            course = form.save()
+    if request.method == "POST":
+        if form.is_valid():
+            course = form.save(commit=False)
             formset.instance = course
-            formset.save()
-            messages.success(request, f"课程 {course.name} 登记成功！")
-            return redirect(reverse_lazy("course"))
-    else:
-        form = CourseForm()
-        formset = TeacherCourseFormSet()
+
+            if formset.is_valid():
+                course.save()
+                formset.save()
+                messages.success(request, f"课程 {course.name} 登记成功！")
+                return redirect(reverse_lazy("course"))
 
     return render(
         request, "teacher_app/course_form.html", {"form": form, "formset": formset}

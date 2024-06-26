@@ -14,9 +14,9 @@
   </thead>
 
   <tr>
-    <td scope="row">{{ course.id }}</th>
+    <th scope="row">{{ course.id }}</th>
     <td>{{ course.name }}</td>
-    <td>{{ course.hours }}</td>
+    <td>{{ course.total_hours }}</td>
     <td>{{ course.get_kind_display }}</td>
   </tr>
 </table>
@@ -32,19 +32,17 @@
       <th scope="col">授课学期</th>
       <th scope="col">学时数</th>
     </tr>
-  </thead>
 
-  <tbody>
     {% for record in course.teachercourse_set.all %}
     <tr>
       <td scope="col">{{ record.teacher.id }}</td>
       <td>{{ record.teacher.name }}</td>
       <td>{{ record.year }}</td>
       <td>{{ record.get_semester_display }}</td>
-      <td>{{ record.hour }}</td>
+      <td>{{ record.hours }}</td>
     </tr>
     {% endfor %}
-  </tbody>
+  </thead>
 </table>
 
 {% endblock content %}

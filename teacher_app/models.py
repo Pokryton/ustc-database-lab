@@ -14,8 +14,6 @@ ProjectKind = models.IntegerChoices(
     "ProjectKind", "国家级项目 省部级项目 市厅级项目 企业合作项目 其它类型项目"
 )
 
-Semester = models.IntegerChoices("Semester", "春季学期 夏季学期 秋季学期")
-
 PAPER_KIND_CHOICES = [
     (1, "full paper"),
     (2, "short paper"),
@@ -49,7 +47,7 @@ class Teacher(models.Model):
 class Course(models.Model):
     id = models.CharField(max_length=256, primary_key=True, verbose_name="课程号")
     name = models.CharField(max_length=256, verbose_name="课程名")
-    hours = models.PositiveIntegerField(verbose_name="总学时")
+    total_hours = models.PositiveIntegerField(verbose_name="总学时")
     kind = models.IntegerField(choices=CourseKind.choices, verbose_name="课程性质")
     teachers = models.ManyToManyField(Teacher, through="TeacherCourse")
 
@@ -85,11 +83,17 @@ class Paper(models.Model):
 
 
 class TeacherCourse(models.Model):
+    SEMESTER_CHOICES = {
+        1: "春季学期",
+        2: "夏季学期",
+        3: "秋季学期",
+    }
+
     teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
     course = models.ForeignKey("Course", on_delete=models.CASCADE)
     year = models.PositiveIntegerField(verbose_name="年份")
-    semester = models.IntegerField(choices=Semester.choices, verbose_name="学期")
-    hour = models.PositiveIntegerField(verbose_name="学时")
+    semester = models.IntegerField(choices=SEMESTER_CHOICES, verbose_name="学期")
+    hours = models.PositiveIntegerField(verbose_name="学时")
 
     def __str__(self):
         return f"{self.teacher.id} {self.course.id}"
