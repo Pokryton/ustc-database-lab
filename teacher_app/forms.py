@@ -54,8 +54,10 @@ class BaseTeacherCourseFormSet(BaseInlineFormSet):
 
             if (year, semester) not in actual_hours:
                 actual_hours[year, semester] = 0
-
             actual_hours[year, semester] += cleaned_data["hours"]
+
+        if not actual_hours:
+            raise ValidationError("请添加授课信息")
 
         for year, semester in actual_hours:
             hours = actual_hours[year, semester]
