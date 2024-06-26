@@ -31,15 +31,16 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "django_bootstrap5",
-    "teacher_app.apps.TeacherAppConfig",
-
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+
+    "teacher_app.apps.TeacherAppConfig",
+    "django_bootstrap5",
+    "django_filters",
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

@@ -32,7 +32,6 @@ class TeacherCourseForm(ModelForm):
 class BaseTeacherCourseFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
-
         if any(self.errors):
             return
 
@@ -50,13 +49,13 @@ class BaseTeacherCourseFormSet(BaseInlineFormSet):
             if not cleaned_data:
                 continue
 
-            year = form.cleaned_data["year"]
-            semester = form.cleaned_data["semester"]
+            year = cleaned_data["year"]
+            semester = cleaned_data["semester"]
 
-            if (year, semester) not in actual_hours.keys():
+            if (year, semester) not in actual_hours:
                 actual_hours[year, semester] = 0
 
-            actual_hours[year, semester] += form.cleaned_data["hours"]
+            actual_hours[year, semester] += cleaned_data["hours"]
 
         for year, semester in actual_hours:
             hours = actual_hours[year, semester]

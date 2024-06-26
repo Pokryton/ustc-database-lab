@@ -13,6 +13,7 @@ from django.db import transaction
 
 from .models import *
 from .forms import *
+from .filters import *
 
 
 def index(request):
@@ -49,11 +50,12 @@ def teacher_detail(request, pk):
     return render(request, "teacher_app/teacher_detail.html", {"form": form})
 
 
-class CourseListView(ListView):
-    model = Course
-    template_name = "teacher_app/course.html"
-    context_object_name = "course_list"
-    ordering = ["id"]
+def course_list(request):
+    filter = CourseFilter(request.GET, queryset=Course.objects.all())
+    course_list = filter.qs.distinct()
+    context = {"filter": filter, "course_list": course_list}
+
+    return render(request, "teacher_app/course_list.html", context)
 
 
 class CourseDetailView(DetailView):
@@ -77,9 +79,8 @@ def course_create(request):
                 messages.success(request, f"课程 {course.name} 登记成功！")
                 return redirect(reverse_lazy("course"))
 
-    return render(
-        request, "teacher_app/course_form.html", {"form": form, "formset": formset}
-    )
+    context = {"form": form, "formset": formset}
+    return render(request, "teacher_app/course_form.html", context)
 
 
 def course_update(request, course_id):
@@ -96,13 +97,9 @@ def course_update(request, course_id):
             formset.save()
             messages.success(request, f"课程 {course.name} 更新成功！")
             return redirect(reverse_lazy("course"))
-        messages.warning(
-            request, f"课程 {course.name} 更新不成功！<br> {formset.errors}"
-        )
 
-    return render(
-        request, "teacher_app/course_form.html", {"form": form, "formset": formset}
-    )
+    context = {"form": form, "formset": formset}
+    return render(request, "teacher_app/course_form.html", context)
 
 
 # def course_delete(request, course_id):
