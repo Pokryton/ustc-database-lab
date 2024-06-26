@@ -21,7 +21,8 @@ def teacher_search(request):
     else:
         teacher_list = Teacher.objects.order_by("id")
 
-    return render(request, "teacher_app/teacher.html", {"teacher_list": teacher_list})
+    context = {"teacher_list": teacher_list}
+    return render(request, "teacher_app/teacher_list.html", context)
 
 
 def teacher_add(request):
@@ -32,7 +33,7 @@ def teacher_add(request):
             messages.success(request, f"教师 {teacher.name} 登记成功！")
             return redirect("teacher")
     else:
-        form = TeacherForm(label_suffix="")
+        form = TeacherForm()
 
     return render(request, "teacher_app/teacher_add.html", {"form": form})
 
@@ -44,7 +45,7 @@ def teacher_detail(request, pk):
 
 
 def course_list(request):
-    filter = CourseFilter(request.GET, queryset=Course.objects.all())
+    filter = CourseFilter(request.GET or None, queryset=Course.objects.all())
     course_list = filter.qs.distinct()
     context = {"filter": filter, "course_list": course_list}
 
@@ -53,7 +54,7 @@ def course_list(request):
 
 def course_detail(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
-    context = { "course": course }
+    context = {"course": course}
     return render(request, "teacher_app/course_detail.html", context)
 
 
@@ -102,5 +103,5 @@ def course_delete(request, course_id):
         course.delete()
         return redirect(reverse_lazy("course"))
 
-    context = { "object": course }
+    context = {"object": course}
     return render(request, "teacher_app/course_confirm_delete.html", context)
