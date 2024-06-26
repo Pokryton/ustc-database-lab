@@ -25,5 +25,5 @@ class TeacherCourseForm(ModelForm):
 
 
 TeacherCourseFormSet = inlineformset_factory(
-    Course, TeacherCourse, form=TeacherCourseForm, extra=3
+    Course, TeacherCourse, form=TeacherCourseForm, extra=0
 )

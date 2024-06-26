@@ -22,9 +22,9 @@
             <th>{{ field.label }}</th>
           {% endfor %}
         </thead>
-    <tbody>
+    <tbody id="formset">
       {% endif %}
-      <tr class="formset_row">
+      <tr class>
         {% for hidden in form.hidden_fields %}
           {{ hidden }}
         {% endfor %}
@@ -35,18 +35,54 @@
         {% endfor %}
       </tr>
     {% endfor %}
+
+    <tr id="formset-empty-form" hidden>
+      {% for hidden in formset.empty_form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+      {% for field in formset.empty_form.visible_fields %}
+        <td>
+          {% bootstrap_field field wrapper_class="my-1" show_label=False %}
+        </td>
+      {% endfor %}
+      </tr>
     </tbody>
   </table>
 
   {% bootstrap_formset_errors formset %}
 
   <div class="mb-3">
-    <button id="add-more" class="btn btn-primary" type="button">添加教师</button>
+    <button id="add-more" class="btn btn-outline-primary" type="button">+ 添加教师</button>
   </div>
+
+  <script text=>
+    const addMoreBtn = document.querySelector("#add-more")
+    const prefix = "teachercourse_set"
+
+    let totalForms = document.querySelector(`#id_${prefix}-TOTAL_FORMS`)
+    // let formset = document.querySelector("#formset")
+    let emptyForm = document.querySelector("#formset-empty-form")
+    let formset = emptyForm.parentElement
+
+    addMoreBtn.addEventListener("click", (e) => {
+      e.preventDefault()
+
+      let formNum = parseInt(totalForms.value)
+
+      let newForm = emptyForm.cloneNode(true)
+      newForm.removeAttribute("id")
+      newForm.removeAttribute("hidden")
+
+      newForm.innerHTML = newForm.innerHTML.replaceAll("__prefix__", `${formNum}`)
+      formset.insertBefore(newForm, emptyForm)
+      
+      totalForms.setAttribute('value', `${formNum + 1}`)
+    })
+  </script>
 
   <div class="auto-me">
     <button class="btn btn-primary" type="submit">确认</button>
-    <button class="btn btn-primary" type="reset">重置</button>
+    <button class="btn btn-secondary" type="reset">重置</button>
   </div>
 </form>
 
