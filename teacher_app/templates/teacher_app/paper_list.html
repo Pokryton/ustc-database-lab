@@ -42,10 +42,9 @@
         <td>{{ paper.get_kind_display }}</td>
         <td>{{ paper.get_level_display }}</td>
         <td>
-          <!--- TODO --->
           <a role="button" class="btn btn-primary" href="{% url "paper-detail" paper.id %}" >详情</a>
           <a role="button" class="btn btn-warning" href="{% url "paper-update" paper.id %}" >更新</a>
-          <a role="button" class="btn btn-danger" href="{% url "course-delete" paper.id %}" >删除</a>
+          <a role="button" class="btn btn-danger" href="{% url "paper-delete" paper.id %}" >删除</a>
         </td>
       </tr>
       {% endfor %}

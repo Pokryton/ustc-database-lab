@@ -25,4 +25,5 @@ urlpatterns = [
     path("paper/add/", views.paper_add, name="paper-add"),
     path("paper/<str:paper_id>", views.paper_detail, name="paper-detail"),
     path("paper/update/<str:paper_id>", views.paper_update, name="paper-update"),
+    path("paper/delete/<str:paper_id>", views.paper_delete, name="paper-delete"),
 ]

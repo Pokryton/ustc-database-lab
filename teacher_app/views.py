@@ -115,7 +115,7 @@ def course_delete(request, course_id):
         return redirect(reverse_lazy("course-list"))
 
     context = {"object": course}
-    return render(request, "teacher_app/confirm_delete.html", context)
+    return render(request, "teacher_app/course_confirm_delete.html", context)
 
 
 def project_list(request):
@@ -194,8 +194,8 @@ def project_delete(request, project_id):
         messages.success(request, f"项目 {project.name} 删除成功！")
         return redirect(reverse_lazy("project-list"))
 
-    context = {"object": project}
-    return render(request, "teacher_app/confirm_delete.html", context)
+    context = {"object": project, "detail": "project-detail"}
+    return render(request, "teacher_app/project_confirm_delete.html", context)
 
 
 def paper_list(request):
@@ -253,3 +253,14 @@ def paper_update(request, paper_id):
     }
     return render(request, "teacher_app/form.html", context)
 
+
+def paper_delete(request, paper_id):
+    paper = get_object_or_404(Paper, pk=paper_id)
+
+    if request.POST:
+        paper.delete()
+        messages.success(request, f"论文《{paper.title}》删除成功！")
+        return redirect(reverse_lazy("paper-list"))
+
+    context = {"object": paper, "detail": "paper-detail"}
+    return render(request, "teacher_app/paper_confirm_delete.html", context)
