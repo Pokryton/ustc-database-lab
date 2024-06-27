@@ -12,7 +12,7 @@
       {% endfor %}
     </div>
     <button class="btn btn-success" type="submit">搜索</button>
-    <a role="button" class="btn btn-secondary" href="{% url 'course' %}" >重置</a>
+    <a role="button" class="btn btn-secondary" href="{% url "project-list" %}" >重置</a>
   </form>
 </div>
 
@@ -45,9 +45,9 @@
         <td>{{ project.start_year }}</td>
         <td>{{ project.end_year }}</td>
         <td>
-          <a role="button" class="btn btn-primary" href="{% url 'project-detail' project.id %}" >详情</a>
-          <a role="button" class="btn btn-warning" href="{% url 'project-update' project.id %}" >更新</a>
-          <a role="button" class="btn btn-danger" href="{% url 'project-delete' project.id %}" >删除</a>
+          <a role="button" class="btn btn-primary" href="{% url "project-detail" project.id %}" >详情</a>
+          <a role="button" class="btn btn-warning" href="{% url "project-update" project.id %}" >更新</a>
+          <a role="button" class="btn btn-danger" href="{% url "project-delete" project.id %}" >删除</a>
         </td>
       </tr>
       {% endfor %}

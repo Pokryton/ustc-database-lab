@@ -6,11 +6,11 @@
 <form method="post">
   {% csrf_token %}
   <p>
-    确认要删除 <a href="{% url 'course-detail' object.id %}">{{ object }}</a> ?
+    确认要删除 <a href="{% url "course-detail" object.id %}">{{ object }}</a> ?
   </p>
 
   <input type="submit" class="btn btn-danger" value="确认"></input>
-  <a class="btn btn-secondary" href="{% url 'course' %}">返回</a>
+  <a class="btn btn-secondary" onclick="history.back()">返回</a>
 </form>
 
 {% endblock content %}

@@ -10,7 +10,7 @@ from .filters import *
 
 
 def index(request):
-    return redirect(reverse_lazy("teacher"))
+    return redirect(reverse_lazy("teacher-list"))
 
 
 def teacher_search(request):
@@ -71,7 +71,7 @@ def course_add(request):
                 course.save()
                 formset.save()
                 messages.success(request, f"课程 {course.name} 登记成功！")
-                return redirect(reverse_lazy("course"))
+                return redirect(reverse_lazy("course-list"))
 
     context = {
         "model": "course",
@@ -95,7 +95,7 @@ def course_update(request, course_id):
             formset.instance = course
             formset.save()
             messages.success(request, f"课程 {course.name} 更新成功！")
-            return redirect(reverse_lazy("course"))
+            return redirect(reverse_lazy("course-list"))
 
     context = {
         "model": "course",
@@ -111,7 +111,7 @@ def course_delete(request, course_id):
 
     if request.POST:
         course.delete()
-        return redirect(reverse_lazy("course"))
+        return redirect(reverse_lazy("course-list"))
 
     context = {"object": course}
     return render(request, "teacher_app/confirm_delete.html", context)
@@ -138,7 +138,7 @@ def project_add(request):
                 project.save()
                 formset.save()
                 messages.success(request, f"项目 {project.name} 登记成功！")
-                return redirect(reverse_lazy("project"))
+                return redirect(reverse_lazy("project-list"))
 
     context = {
         "model": "project",
@@ -162,7 +162,7 @@ def project_update(request, project_id):
             formset.instance = project
             formset.save()
             messages.success(request, f"项目 {project.name} 更新成功！")
-            return redirect(reverse_lazy("project"))
+            return redirect(reverse_lazy("project-list"))
 
     context = {
         "model": "project",
@@ -184,7 +184,7 @@ def project_delete(request, project_id):
 
     if request.POST:
         project.delete()
-        return redirect(reverse_lazy("project"))
+        return redirect(reverse_lazy("project-list"))
 
     context = {"object": project}
     return render(request, "teacher_app/confirm_delete.html", context)
