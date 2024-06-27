@@ -1,0 +1,110 @@
+{% extends "teacher_app/base.html" %}
+
+{% load django_bootstrap5 %}
+
+{% block content %}
+
+<div class="d-flex justify-content-center d-print-none">
+  <form method="get">
+    <div class="row g-3 my-2 align-items-center">
+      {% for field in form %}
+        {% bootstrap_field field wrapper_class="col-auto my-2" show_label=False %}
+      {% endfor %}
+
+      <div class="col-auto my-2">
+        <button class="btn btn-success" type="submit">搜索</button>
+      </div>
+      <div class="col-auto my-2">
+        <a class="btn btn-primary" href="javascript:self.print()">打印</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+<hr class="mb-5 boarder d-print-none">
+
+<style>
+  @media print {
+    body {
+      font-size: smaller;
+    }
+    hr {
+      margin: 0;
+    }
+  }
+
+  ol {
+    padding-left: 0;
+    list-style-position: inside;
+  }
+</style>
+
+<h5 class="d-flex justify-content-center">
+  教师教学科研工作统计{% if start_year %}（{{ start_year }}-{{ end_year }}）{% endif %}
+</h5>
+
+<div class="my-4">
+  <h6>教师基本信息</h6>
+  <hr class="border border-black opacity-100">
+
+  <div class="my-2">
+    工号：{{ teacher.id }} &emsp;
+    姓名：{{ teacher.name }} &emsp;
+    性别：{{ teacher.get_gender_display }} &emsp;
+    职称：{{ teacher.get_title_display }}
+  </div>
+</div>
+
+{% if teachercourse_list %}
+<div class="my-4">
+  <h6>教学情况</h6>
+  <hr class="border border-black opacity-100">
+  
+  <div class="my-2">
+    {% for record in teachercourse_list %}
+      <div>
+        课程号：{{ record.course.id }} &emsp;
+        课程名：{{ record.course.name }} &emsp;
+        主讲学时：{{ record.hours }} &emsp;
+        学期：{{ record.year }} {{ record.get_semester_display | first }}
+      </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if teacherpaper_list %}
+<div class="my-4">
+  <h6>发表论文情况</h6>
+  <hr class="border border-black opacity-100">
+
+  <ol class="my-2">
+    {% for record in teacherpaper_list %}
+      <li>
+        {{ record.paper.title }}，
+        {{ record.paper.source }}，
+        {{ record.paper.pub_year.year }}，
+        {{ record.paper.get_level_display }}，
+        排名第 {{ record.rank }} {% if record.corresp %}，
+        通讯作者 {% endif %}
+      </li>
+    {% endfor %}
+  </ol>
+</div>
+{% endif %}
+
+{% if teacherproject_list %}
+<div class="my-4">
+  <h6>承担项目情况</h6>
+  <hr class="border border-black opacity-100">
+
+  <ol class="my-2">
+    {% for record in teacherproject_list %}
+      <li>
+        {{ record.project.name }}，{{ record.project.source }}，{{ record.project.get_kind_display }}，{{ record.project.start_year }}—{{ record.project.end_year }}，总经费 {{ record.project.total_fund }}，承担经费 {{ record.fund }}
+      </li>
+    {% endfor %}
+  </ol>
+</div>
+{% endif %}
+
+{% endblock content %}

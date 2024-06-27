@@ -33,10 +33,51 @@ def teacher_add(request):
     return render(request, "teacher_app/teacher_add.html", {"form": form})
 
 
-def teacher_detail(request, pk):
-    teacher_info = Teacher.objects.filter(pk=pk).first()
-    teacher_course = TeacherCourse.objects.filter(teacher__id=pk).first()
-    return render(request, "teacher_app/teacher_detail.html", {"form": form})
+def teacher_summary(request, pk):
+    teacher = get_object_or_404(Teacher, pk=pk)
+
+    context = {"teacher": teacher}
+    form = YearRangeForm(request.GET or None)
+
+    if request.GET:
+        form = YearRangeForm(request.GET)
+        if form.is_valid():
+            start_year = form.cleaned_data["start_year"]
+            end_year = form.cleaned_data["end_year"]
+
+            try:
+                teachercourse_list = TeacherCourse.objects.filter(
+                    Q(teacher=teacher),
+                    Q(year__gte=start_year),
+                    Q(year__lte=end_year),
+                )
+
+                teacherpaper_list = TeacherPaper.objects.filter(
+                    Q(teacher=teacher),
+                    Q(paper__pub_year__year__gte=start_year),
+                    Q(paper__pub_year__year__lte=end_year),
+                )
+
+                teacherproject_list = TeacherProject.objects.filter(
+                    Q(teacher=teacher),
+                    Q(project__start_year__lte=end_year),
+                    Q(project__end_year__gte=start_year),
+                )
+
+                context.update(
+                    {
+                        "start_year": start_year,
+                        "end_year": end_year,
+                        "teachercourse_list": teachercourse_list,
+                        "teacherpaper_list": teacherpaper_list,
+                        "teacherproject_list": teacherproject_list,
+                    }
+                )
+            except Exception as e:
+                messages.warning(request, f"数据错误 {e}")
+
+    context["form"] = form
+    return render(request, "teacher_app/teacher_summary.html", context)
 
 
 def course_list(request):

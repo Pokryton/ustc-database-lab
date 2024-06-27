@@ -43,8 +43,7 @@
       <td>{{ teacher.get_gender_display }}</td>
       <td>{{ teacher.get_title_display }}</td>
       <td>
-        <a class="btn btn-primary" href="{% url 'teacher-detail' teacher.id %}" role="button">详情</a>
-        <a class="btn btn-primary" href="#" role="button">工作统计</a>
+        <a class="btn btn-primary" href="{% url "teacher-summary" teacher.id %}" role="button">工作统计</a>
       </td>
     </tr>
     {% endfor %}

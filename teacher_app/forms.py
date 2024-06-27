@@ -1,3 +1,5 @@
+from django import forms
+
 from django.forms import (
     ModelForm,
     BaseInlineFormSet,
@@ -155,3 +157,8 @@ TeacherPaperFormSet = inlineformset_factory(
     max_num=1,
     formset=BaseTeacherPaperFormSet,
 )
+
+
+class YearRangeForm(forms.Form):
+    start_year = forms.IntegerField(label="开始年份")
+    end_year = forms.IntegerField(label="结束年份")
