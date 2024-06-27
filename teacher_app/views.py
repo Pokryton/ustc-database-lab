@@ -15,7 +15,8 @@ def index(request):
 
 def teacher_list(request):
     filter = TeacherFilter(request.GET or None, queryset=Teacher.objects.all())
-    context = {"filter": filter, "teacher_list": filter.qs}
+    teacher_list = filter.qs
+    context = {"filter": filter, "teacher_list": teacher_list}
     return render(request, "teacher_app/teacher_list.html", context)
 
 

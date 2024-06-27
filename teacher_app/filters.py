@@ -8,8 +8,8 @@ class TeacherFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr="icontains", label="姓名")
 
     class Meta:
-        model = Course
-        fields = ["id", "name"]
+        model = Teacher
+        fields = ["id", "name", "gender", "title"]
 
 
 class CourseFilter(django_filters.FilterSet):
