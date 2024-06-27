@@ -20,15 +20,6 @@ class CourseForm(ModelForm):
         fields = ["id", "name", "total_hours", "kind"]
 
 
-class TeacherCourseForm(ModelForm):
-    class Meta:
-        model = TeacherCourse
-        fields = ["teacher", "course", "year", "semester", "hours"]
-        labels = {
-            "teacher": "教师",
-        }
-
-
 class BaseTeacherCourseFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
@@ -71,8 +62,8 @@ class BaseTeacherCourseFormSet(BaseInlineFormSet):
 TeacherCourseFormSet = inlineformset_factory(
     Course,
     TeacherCourse,
-    form=TeacherCourseForm,
-    extra=0,
+    fields="__all__",
+    max_num=1,
     formset=BaseTeacherCourseFormSet,
 )
 
@@ -80,17 +71,15 @@ TeacherCourseFormSet = inlineformset_factory(
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = ["id", "name", "source", "kind", "total_fund", "start_year", "end_year"]
-
-
-class TeacherProjectForm(ModelForm):
-    class Meta:
-        model = TeacherProject
-        fields = ["teacher", "project", "rank", "fund"]
-        labels = {
-            "teacher": "教师",
-            "rank": "排名"
-        }
+        fields = [
+            "id",
+            "name",
+            "source",
+            "kind",
+            "total_fund",
+            "start_year",
+            "end_year",
+        ]
 
 
 class BaseTeacherProjectFormSet(BaseInlineFormSet):
@@ -122,8 +111,7 @@ class BaseTeacherProjectFormSet(BaseInlineFormSet):
 TeacherProjectFormSet = inlineformset_factory(
     Project,
     TeacherProject,
-    fields = "__all__",
-    extra=0,
+    fields="__all__",
+    max_num=1,
     formset=BaseTeacherProjectFormSet,
 )
-

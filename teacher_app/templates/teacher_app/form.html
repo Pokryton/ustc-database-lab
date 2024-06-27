@@ -15,36 +15,33 @@
   <table class="table">
     {{ formset.management_form }}
 
-    {% for form in formset.forms %}
-      {% if forloop.first %}
-        <thead>
-          {% for field in form.visible_fields %}
-            <th>{{ field.label }}</th>
-          {% endfor %}
-        </thead>
+    {% for field in formset.empty_form.visible_fields %}
+      <th>{{ field.label }}</th>
+    {% endfor %}
+
     <tbody id="formset">
-      {% endif %}
-      <tr class>
-        {% for hidden in form.hidden_fields %}
+      {% for form in formset.forms %}
+        <tr>
+          {% for hidden in form.hidden_fields %}
+            {{ hidden }}
+          {% endfor %}
+          {% for field in form.visible_fields %}
+            <td>
+              {% bootstrap_field field wrapper_class="my-1" show_label=False %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+
+      <tr id="formset-empty-form" hidden>
+        {% for hidden in formset.empty_form.hidden_fields %}
           {{ hidden }}
         {% endfor %}
-        {% for field in form.visible_fields %}
+        {% for field in formset.empty_form.visible_fields %}
           <td>
             {% bootstrap_field field wrapper_class="my-1" show_label=False %}
           </td>
         {% endfor %}
-      </tr>
-    {% endfor %}
-
-    <tr id="formset-empty-form" hidden>
-      {% for hidden in formset.empty_form.hidden_fields %}
-        {{ hidden }}
-      {% endfor %}
-      {% for field in formset.empty_form.visible_fields %}
-        <td>
-          {% bootstrap_field field wrapper_class="my-1" show_label=False %}
-        </td>
-      {% endfor %}
       </tr>
     </tbody>
   </table>
