@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Q
+from django.db.models import F, Q
 
 
 class Teacher(models.Model):
@@ -73,6 +73,13 @@ class Project(models.Model):
 
     class Meta:
         verbose_name = "项目"
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(start_year__lte=F("end_year")),
+                name="start_year_lte_end_year",
+                violation_error_message="开始年份应小于或等于结束年份",
+            )
+        ]
 
     def __str__(self):
         return f"{self.id} {self.name}"
@@ -117,19 +124,34 @@ class TeacherCourse(models.Model):
         3: "秋季学期",
     }
 
-    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT, verbose_name="教师")
+    teacher = models.ForeignKey(
+        "Teacher", on_delete=models.PROTECT, verbose_name="教师"
+    )
     course = models.ForeignKey("Course", on_delete=models.CASCADE, verbose_name="课程")
     year = models.PositiveIntegerField(verbose_name="年份")
     semester = models.IntegerField(choices=SEMESTER_CHOICES, verbose_name="学期")
     hours = models.PositiveIntegerField(verbose_name="学时")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["teacher", "course", "year", "semester"],
+                name="unique_teacher_course_year_semester",
+                violation_error_message="授课教师重复",
+            ),
+        ]
 
     def __str__(self):
         return f"{self.teacher.id} {self.course.id}"
 
 
 class TeacherProject(models.Model):
-    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT, verbose_name="教师")
-    project = models.ForeignKey("Project", on_delete=models.CASCADE, verbose_name="项目")
+    teacher = models.ForeignKey(
+        "Teacher", on_delete=models.PROTECT, verbose_name="教师"
+    )
+    project = models.ForeignKey(
+        "Project", on_delete=models.CASCADE, verbose_name="项目"
+    )
     rank = models.PositiveIntegerField(verbose_name="排名")
     fund = models.FloatField(verbose_name="承担经费")
 
@@ -138,10 +160,12 @@ class TeacherProject(models.Model):
             models.UniqueConstraint(
                 fields=["teacher", "project"],
                 name="unique_teacher_project",
+                violation_error_message="承担教师重复",
             ),
             models.UniqueConstraint(
                 fields=["project", "rank"],
                 name="unique_project_rank",
+                violation_error_message="排名重复",
             ),
         ]
 
@@ -150,7 +174,9 @@ class TeacherProject(models.Model):
 
 
 class TeacherPaper(models.Model):
-    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT, verbose_name="教师")
+    teacher = models.ForeignKey(
+        "Teacher", on_delete=models.PROTECT, verbose_name="教师"
+    )
     paper = models.ForeignKey("Paper", on_delete=models.CASCADE, verbose_name="论文")
     rank = models.PositiveIntegerField(verbose_name="排名")
     corresp = models.BooleanField(verbose_name="是否通讯作者")
@@ -160,15 +186,18 @@ class TeacherPaper(models.Model):
             models.UniqueConstraint(
                 fields=["teacher", "paper"],
                 name="unique_teacher_paper",
+                violation_error_message="作者重复",
             ),
             models.UniqueConstraint(
                 fields=["paper", "rank"],
                 name="unique_paper_rank",
+                violation_error_message="排名重复",
             ),
             models.UniqueConstraint(
                 fields=["paper"],
                 condition=Q(corresp=True),
                 name="unique_paper_corresp",
+                violation_error_message="一篇论文只能有一个通讯作者",
             ),
         ]
 
