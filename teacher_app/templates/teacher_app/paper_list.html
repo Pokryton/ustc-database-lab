@@ -18,7 +18,7 @@
 
 <div>
   <h2> 论文列表 </h2>
-  <a class="btn btn-outline-primary" href="{% url "paper-list" %}" role="button">+ 添加论文</a>
+  <a class="btn btn-outline-primary" href="{% url "paper-add" %}" role="button">+ 添加论文</a>
 
   <table class="table text-center">
     <thead>
@@ -29,6 +29,7 @@
         <th scope="col">发表年份</th>
         <th scope="col">类型</th>
         <th scope="col">级别</th>
+        <th scope="col">操作</th>
       </tr>
     </thead>
 
@@ -39,11 +40,12 @@
         <td>{{ paper.source }}</td>
         <td>{{ paper.pub_year }}</td>
         <td>{{ paper.get_kind_display }}</td>
-        <td>{{ paper.get_rank_display }}</td>
+        <td>{{ paper.get_level_display }}</td>
         <td>
-          <a role="button" class="btn btn-primary" href="{% url "course-detail" course.id %}" >详情</a>
-          <a role="button" class="btn btn-warning" href="{% url "course-update" course.id %}" >更新</a>
-          <a role="button" class="btn btn-danger" href="{% url "course-delete" course.id %}" >删除</a>
+          <!--- TODO --->
+          <a role="button" class="btn btn-primary" href="{% url "paper-detail" paper.id %}" >详情</a>
+          <a role="button" class="btn btn-warning" href="{% url "paper-update" paper.id %}" >更新</a>
+          <a role="button" class="btn btn-danger" href="{% url "course-delete" paper.id %}" >删除</a>
         </td>
       </tr>
       {% endfor %}

@@ -111,6 +111,7 @@ def course_delete(request, course_id):
 
     if request.POST:
         course.delete()
+        messages.success(request, f"课程 {course.name} 删除成功！")
         return redirect(reverse_lazy("course-list"))
 
     context = {"object": course}
@@ -123,6 +124,12 @@ def project_list(request):
     context = {"filter": filter, "project_list": project_list}
 
     return render(request, "teacher_app/project_list.html", context)
+
+
+def paper_detail(request, paper_id):
+    paper = get_object_or_404(Paper, pk=paper_id)
+    context = {"paper": paper}
+    return render(request, "teacher_app/paper_detail.html", context)
 
 
 def project_add(request):
@@ -184,6 +191,7 @@ def project_delete(request, project_id):
 
     if request.POST:
         project.delete()
+        messages.success(request, f"项目 {project.name} 删除成功！")
         return redirect(reverse_lazy("project-list"))
 
     context = {"object": project}
@@ -196,4 +204,52 @@ def paper_list(request):
     context = {"filter": filter, "paper_list": paper_list}
 
     return render(request, "teacher_app/paper_list.html", context)
+
+
+def paper_add(request):
+    form = PaperForm(request.POST or None)
+    formset = TeacherPaperFormSet(request.POST or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            paper = form.save(commit=False)
+            formset.instance = paper
+
+            if formset.is_valid():
+                paper.save()
+                formset.save()
+                messages.success(request, f"论文《{paper.title}》登记成功！")
+                return redirect(reverse_lazy("paper-list"))
+
+    context = {
+        "model": "paper",
+        "model_name": "论文",
+        "form": form,
+        "formset": formset,
+    }
+    return render(request, "teacher_app/form.html", context)
+
+
+def paper_update(request, paper_id):
+    paper = get_object_or_404(Paper, pk=paper_id)
+
+    form = PaperForm(request.POST or None, instance=paper)
+    form.fields["id"].disabled = True
+    formset = TeacherPaperFormSet(request.POST or None, instance=paper)
+
+    if request.method == "POST":
+        if form.is_valid() and formset.is_valid():
+            paper = form.save()
+            formset.instance = paper
+            formset.save()
+            messages.success(request, f"论文《{paper.title}》更新成功！")
+            return redirect(reverse_lazy("paper-list"))
+
+    context = {
+        "model": "paper",
+        "model_name": "项目",
+        "form": form,
+        "formset": formset,
+    }
+    return render(request, "teacher_app/form.html", context)
 

@@ -22,4 +22,7 @@ urlpatterns = [
     path("project/delete/<str:project_id>", views.project_delete, name="project-delete"),
 
     path("paper/", views.paper_list, name="paper-list"),
+    path("paper/add/", views.paper_add, name="paper-add"),
+    path("paper/<str:paper_id>", views.paper_detail, name="paper-detail"),
+    path("paper/update/<str:paper_id>", views.paper_update, name="paper-update"),
 ]

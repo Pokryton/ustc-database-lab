@@ -115,3 +115,43 @@ TeacherProjectFormSet = inlineformset_factory(
     max_num=1,
     formset=BaseTeacherProjectFormSet,
 )
+
+
+class PaperForm(ModelForm):
+    class Meta:
+        model = Paper
+        exclude = ["teachers"]
+
+
+class BaseTeacherPaperFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors):
+            return
+
+        has_corresp = False
+
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form):
+                continue
+
+            cleaned_data = form.clean()
+            if not cleaned_data:
+                continue
+
+            if has_corresp and cleaned_data["corresp"]:
+                raise ValidationError("一篇论文只能有一位通讯作者")
+
+            has_corresp |= cleaned_data["corresp"]
+
+        if not has_corresp:
+            raise ValidationError("请指定通讯作者")
+
+
+TeacherPaperFormSet = inlineformset_factory(
+    Paper,
+    TeacherPaper,
+    fields="__all__",
+    max_num=1,
+    formset=BaseTeacherPaperFormSet,
+)
