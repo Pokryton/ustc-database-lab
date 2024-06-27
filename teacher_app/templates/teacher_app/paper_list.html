@@ -3,20 +3,25 @@
 
 {% block content %}
 
-<div class="mb-4">
+<div>
   <h2> 搜索条件 </h2>
   <form method="get">
-    <div class="row g-3 my-2">
+    <div class="row g-3 my-2 align-items-end">
       {% for field in filter.form %}
         {% bootstrap_field field wrapper_class="col-auto my-2" server_side_validation=False %}
       {% endfor %}
+
+      <div class="col-auto my-2">
+        <button class="btn btn-success" type="submit">搜索</button>
+        <a role="button col my-2" class="btn btn-secondary" href="{% url "paper-list" %}" >重置</a>
+      </div>
     </div>
-    <button class="btn btn-success" type="submit">搜索</button>
-    <a role="button" class="btn btn-secondary" href="{% url "paper-list" %}" >重置</a>
   </form>
 </div>
 
-<div class="mt-4">
+<hr class="my-4">
+
+<div>
   <h2> 论文列表 </h2>
 
   <a class="btn btn-outline-primary my-2" href="{% url "paper-add" %}" role="button">+ 添加论文</a>
