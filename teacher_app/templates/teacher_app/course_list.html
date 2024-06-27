@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<div class="mb-3">
+<div class="mb-4">
   <h2> 搜索条件 </h2>
   <form method="get">
     <div class="row g-3 my-2">
@@ -16,10 +16,10 @@
   </form>
 </div>
 
-<div>
+<div class="mt-4">
   <h2> 课程列表 </h2>
 
-  <a class="btn btn-outline-primary" href="{% url "course-add" %}" role="button">+ 添加课程</a>
+  <a class="btn btn-outline-primary my-2" href="{% url "course-add" %}" role="button">+ 添加课程</a>
 
   <table class="table text-center">
     <thead>
