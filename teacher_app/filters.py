@@ -33,3 +33,16 @@ class ProjectFilter(django_filters.FilterSet):
     class Meta:
         model = Project
         fields = ["id", "name", "source", "kind"]
+
+
+class PaperFilter(django_filters.FilterSet):
+    id = django_filters.CharFilter(lookup_expr="icontains", label="论文号")
+    title = django_filters.CharFilter(lookup_expr="icontains", label="论文名称")
+    source = django_filters.CharFilter(lookup_expr="icontains", label="发表源")
+    teacher__name = django_filters.CharFilter(
+        field_name="teachers", lookup_expr="name__icontains", label="作者姓名"
+    )
+
+    class Meta:
+        model = Paper
+        fields = ["id", "title", "source", "kind", "level"]

@@ -188,3 +188,12 @@ def project_delete(request, project_id):
 
     context = {"object": project}
     return render(request, "teacher_app/confirm_delete.html", context)
+
+
+def paper_list(request):
+    filter = PaperFilter(request.GET or None, queryset=Paper.objects.all())
+    paper_list = filter.qs.distinct()
+    context = {"filter": filter, "paper_list": paper_list}
+
+    return render(request, "teacher_app/paper_list.html", context)
+

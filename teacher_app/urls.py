@@ -20,4 +20,6 @@ urlpatterns = [
     path("project/<str:project_id>", views.project_detail, name="project-detail"),
     path("project/update/<str:project_id>", views.project_update, name="project-update"),
     path("project/delete/<str:project_id>", views.project_delete, name="project-delete"),
+
+    path("paper/", views.paper_list, name="paper-list"),
 ]
