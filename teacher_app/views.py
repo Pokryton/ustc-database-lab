@@ -13,15 +13,9 @@ def index(request):
     return redirect(reverse_lazy("teacher-list"))
 
 
-def teacher_search(request):
-    if request.method == "POST":
-        id = request.POST.get("id")
-        # TODO
-        teacher_list = Teacher.objects.filter(id__icontains=id)
-    else:
-        teacher_list = Teacher.objects.order_by("id")
-
-    context = {"teacher_list": teacher_list}
+def teacher_list(request):
+    filter = TeacherFilter(request.GET or None, queryset=Teacher.objects.all())
+    context = {"filter": filter, "teacher_list": filter.qs}
     return render(request, "teacher_app/teacher_list.html", context)
 
 

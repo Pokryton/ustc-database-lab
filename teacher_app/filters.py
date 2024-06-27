@@ -3,6 +3,15 @@ import django_filters
 from .models import *
 
 
+class TeacherFilter(django_filters.FilterSet):
+    id = django_filters.CharFilter(lookup_expr="icontains", label="工号")
+    name = django_filters.CharFilter(lookup_expr="icontains", label="姓名")
+
+    class Meta:
+        model = Course
+        fields = ["id", "name"]
+
+
 class CourseFilter(django_filters.FilterSet):
     id = django_filters.CharFilter(lookup_expr="icontains", label="课程号")
     name = django_filters.CharFilter(lookup_expr="icontains", label="课程名称")
