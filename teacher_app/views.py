@@ -21,16 +21,31 @@ def teacher_list(request):
 
 
 def teacher_add(request):
+    form = TeacherForm(request.POST or None)
     if request.method == "POST":
-        form = TeacherForm(request.POST)
         if form.is_valid():
             teacher = form.save()
             messages.success(request, f"教师 {teacher.name} 登记成功！")
             return redirect("teacher")
-    else:
-        form = TeacherForm()
 
-    return render(request, "teacher_app/teacher_add.html", {"form": form})
+    context = {"form": form}
+    return render(request, "teacher_app/teacher_form.html", {"form": form})
+
+
+def teacher_update(request, pk):
+    teacher = get_object_or_404(Teacher, pk=pk)
+
+    form = CourseForm(request.POST or None, instance=teacher)
+    form.fields["id"].disabled = True
+
+    if request.method == "POST":
+        if form.is_valid():
+            teacher = form.save()
+            messages.success(request, f"教师 {teacher.name} 更新成功！")
+            return redirect(reverse_lazy("teacher-list"))
+
+    context = {"form": form}
+    return render(request, "teacher_app/teacher_form.html", context)
 
 
 def teacher_summary(request, pk):
