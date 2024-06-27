@@ -69,8 +69,8 @@ def teacher_summary(request, pk):
 
                 teacherpaper_list = TeacherPaper.objects.filter(
                     Q(teacher=teacher),
-                    Q(paper__pub_year__year__gte=start_year),
-                    Q(paper__pub_year__year__lte=end_year),
+                    Q(paper__pub_year__gte=start_year),
+                    Q(paper__pub_year__lte=end_year),
                 )
 
                 teacherproject_list = TeacherProject.objects.filter(

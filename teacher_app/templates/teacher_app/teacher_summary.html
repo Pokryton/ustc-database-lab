@@ -80,12 +80,7 @@
   <ol class="my-2">
     {% for record in teacherpaper_list %}
       <li>
-        {{ record.paper.title }}，
-        {{ record.paper.source }}，
-        {{ record.paper.pub_year.year }}，
-        {{ record.paper.get_level_display }}，
-        排名第 {{ record.rank }} {% if record.corresp %}，
-        通讯作者 {% endif %}
+        {{ record.paper.title }}，{{ record.paper.source }}，{{ record.paper.pub_year }}，{{ record.paper.get_level_display }}，排名第 {{ record.rank }} {% if record.corresp %}，通讯作者 {% endif %}
       </li>
     {% endfor %}
   </ol>
