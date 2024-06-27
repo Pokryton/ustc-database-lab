@@ -75,3 +75,55 @@ TeacherCourseFormSet = inlineformset_factory(
     extra=0,
     formset=BaseTeacherCourseFormSet,
 )
+
+
+class ProjectForm(ModelForm):
+    class Meta:
+        model = Project
+        fields = ["id", "name", "source", "kind", "total_fund", "start_year", "end_year"]
+
+
+class TeacherProjectForm(ModelForm):
+    class Meta:
+        model = TeacherProject
+        fields = ["teacher", "project", "rank", "fund"]
+        labels = {
+            "teacher": "教师",
+            "rank": "排名"
+        }
+
+
+class BaseTeacherProjectFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors):
+            return
+
+        if not hasattr(self.instance, "total_fund"):
+            raise ValidationError("未指定项目总经费")
+
+        expected_fund = self.instance.total_fund
+        actual_fund = 0
+
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form):
+                continue
+
+            cleaned_data = form.clean()
+            if not cleaned_data:
+                continue
+
+            actual_fund += cleaned_data["fund"]
+
+        if actual_fund != expected_fund:
+            raise ValidationError("教师承担经费总额与项目总经费不匹配")
+
+
+TeacherProjectFormSet = inlineformset_factory(
+    Project,
+    TeacherProject,
+    fields = "__all__",
+    extra=0,
+    formset=BaseTeacherProjectFormSet,
+)
+

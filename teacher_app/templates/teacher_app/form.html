@@ -6,11 +6,11 @@
 <form method="POST">
   {% csrf_token %}
 
-  <h2>课程信息</h2>
+  <h2>{{model_name}}信息</h2>
 
   {% bootstrap_form form layout="horizontal" %}
 
-  <h2>授课教师</h2>
+  <h2>教师信息</h2>
 
   <table class="table">
     {{ formset.management_form }}
@@ -57,7 +57,7 @@
 
   <script text=>
     const addMoreBtn = document.querySelector("#add-more")
-    const prefix = "teachercourse_set"
+    const prefix = "teacher{{model}}_set"
 
     let totalForms = document.querySelector(`#id_${prefix}-TOTAL_FORMS`)
     // let formset = document.querySelector("#formset")

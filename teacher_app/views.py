@@ -58,7 +58,7 @@ def course_detail(request, course_id):
     return render(request, "teacher_app/course_detail.html", context)
 
 
-def course_create(request):
+def course_add(request):
     form = CourseForm(request.POST or None)
     formset = TeacherCourseFormSet(request.POST or None)
 
@@ -73,8 +73,13 @@ def course_create(request):
                 messages.success(request, f"课程 {course.name} 登记成功！")
                 return redirect(reverse_lazy("course"))
 
-    context = {"form": form, "formset": formset}
-    return render(request, "teacher_app/course_form.html", context)
+    context = {
+        "model": "course",
+        "model_name": "课程",
+        "form": form,
+        "formset": formset,
+    }
+    return render(request, "teacher_app/form.html", context)
 
 
 def course_update(request, course_id):
@@ -92,8 +97,13 @@ def course_update(request, course_id):
             messages.success(request, f"课程 {course.name} 更新成功！")
             return redirect(reverse_lazy("course"))
 
-    context = {"form": form, "formset": formset}
-    return render(request, "teacher_app/course_form.html", context)
+    context = {
+        "model": "course",
+        "model_name": "课程",
+        "form": form,
+        "formset": formset,
+    }
+    return render(request, "teacher_app/form.html", context)
 
 
 def course_delete(request, course_id):
@@ -104,4 +114,77 @@ def course_delete(request, course_id):
         return redirect(reverse_lazy("course"))
 
     context = {"object": course}
-    return render(request, "teacher_app/course_confirm_delete.html", context)
+    return render(request, "teacher_app/confirm_delete.html", context)
+
+
+def project_list(request):
+    filter = ProjectFilter(request.GET or None, queryset=Project.objects.all())
+    project_list = filter.qs.distinct()
+    context = {"filter": filter, "project_list": project_list}
+
+    return render(request, "teacher_app/project_list.html", context)
+
+
+def project_add(request):
+    form = ProjectForm(request.POST or None)
+    formset = TeacherProjectFormSet(request.POST or None)
+
+    if request.method == "POST":
+        if form.is_valid():
+            project = form.save(commit=False)
+            formset.instance = project
+
+            if formset.is_valid():
+                project.save()
+                formset.save()
+                messages.success(request, f"项目 {project.name} 登记成功！")
+                return redirect(reverse_lazy("project"))
+
+    context = {
+        "model": "project",
+        "model_name": "项目",
+        "form": form,
+        "formset": formset,
+    }
+    return render(request, "teacher_app/form.html", context)
+
+
+def project_update(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    form = ProjectForm(request.POST or None, instance=project)
+    form.fields["id"].disabled = True
+    formset = TeacherProjectFormSet(request.POST or None, instance=project)
+
+    if request.method == "POST":
+        if form.is_valid() and formset.is_valid():
+            project = form.save()
+            formset.instance = project
+            formset.save()
+            messages.success(request, f"项目 {project.name} 更新成功！")
+            return redirect(reverse_lazy("project"))
+
+    context = {
+        "model": "project",
+        "model_name": "项目",
+        "form": form,
+        "formset": formset,
+    }
+    return render(request, "teacher_app/form.html", context)
+
+
+def project_detail(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+    context = {"project": project}
+    return render(request, "teacher_app/project_detail.html", context)
+
+
+def project_delete(request, project_id):
+    project = get_object_or_404(Project, pk=project_id)
+
+    if request.POST:
+        project.delete()
+        return redirect(reverse_lazy("project"))
+
+    context = {"object": project}
+    return render(request, "teacher_app/confirm_delete.html", context)

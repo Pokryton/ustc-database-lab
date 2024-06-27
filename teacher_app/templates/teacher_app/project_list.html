@@ -1,0 +1,56 @@
+{% extends "teacher_app/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block content %}
+
+<div class="mb-3">
+  <h2> 搜索条件 </h2>
+  <form method="get">
+    <div class="row g-3 my-2">
+      {% for field in filter.form %}
+        {% bootstrap_field field wrapper_class="col-auto my-2" server_side_validation=False %}
+      {% endfor %}
+    </div>
+    <button class="btn btn-success" type="submit">搜索</button>
+    <a role="button" class="btn btn-secondary" href="{% url 'course' %}" >重置</a>
+  </form>
+</div>
+
+<div>
+  <h2> 项目列表 </h2>
+
+  <a class="btn btn-primary" href="{% url "project-add" %}" role="button">+ 添加项目</a>
+
+  <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">项目号</th>
+        <th scope="col">项目名称</th>
+        <th scope="col">项目来源</th>
+        <th scope="col">项目类型</th>
+        <th scope="col">总经费</th>
+        <th scope="col">开始年份</th>
+        <th scope="col">结束年份</th>
+        <th scope="col">操作</th>
+      </tr>
+    </thead>
+
+      {% for project in project_list %}
+      <tr>
+        <td scope="row">{{ project.id }}</td>
+        <td>{{ project.name }}</td>
+        <td>{{ project.source }}</td>
+        <td>{{ project.get_kind_display }}</td>
+        <td>{{ project.total_fund }}</td>
+        <td>{{ project.start_year }}</td>
+        <td>{{ project.end_year }}</td>
+        <td>
+          <a role="button" class="btn btn-primary" href="{% url 'project-detail' project.id %}" >详情</a>
+          <a role="button" class="btn btn-warning" href="{% url 'project-update' project.id %}" >更新</a>
+          <a role="button" class="btn btn-danger" href="{% url 'project-delete' project.id %}" >删除</a>
+        </td>
+      </tr>
+      {% endfor %}
+  </table>
+</div>
+{% endblock %}

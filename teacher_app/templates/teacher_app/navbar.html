@@ -13,7 +13,7 @@
           <a class="nav-link {% if request.resolver_match.url_name == 'course' %}active{% endif %}" href="{% url 'course' %}">课程</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'project' %}active{% endif %}" href="#">项目</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'project' %}active{% endif %}" href="{% url 'project' %}">项目</a>
         </li>
         <li class="nav-item">
           <a class="nav-link {% if request.resolver_match.url_name == 'paper' %}active{% endif %}" href="#">论文</a>

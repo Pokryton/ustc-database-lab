@@ -117,8 +117,8 @@ class TeacherCourse(models.Model):
         3: "秋季学期",
     }
 
-    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
-    course = models.ForeignKey("Course", on_delete=models.CASCADE)
+    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT, verbose_name="教师")
+    course = models.ForeignKey("Course", on_delete=models.CASCADE, verbose_name="课程")
     year = models.PositiveIntegerField(verbose_name="年份")
     semester = models.IntegerField(choices=SEMESTER_CHOICES, verbose_name="学期")
     hours = models.PositiveIntegerField(verbose_name="学时")
@@ -128,8 +128,8 @@ class TeacherCourse(models.Model):
 
 
 class TeacherProject(models.Model):
-    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
-    project = models.ForeignKey("Project", on_delete=models.CASCADE)
+    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT, verbose_name="教师")
+    project = models.ForeignKey("Project", on_delete=models.CASCADE, verbose_name="项目")
     rank = models.PositiveIntegerField(verbose_name="排名")
     fund = models.FloatField(verbose_name="承担经费")
 
@@ -150,8 +150,8 @@ class TeacherProject(models.Model):
 
 
 class TeacherPaper(models.Model):
-    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT)
-    paper = models.ForeignKey("Paper", on_delete=models.CASCADE)
+    teacher = models.ForeignKey("Teacher", on_delete=models.PROTECT, verbose_name="教师")
+    paper = models.ForeignKey("Paper", on_delete=models.CASCADE, verbose_name="论文")
     rank = models.PositiveIntegerField(verbose_name="排名")
     corresp = models.BooleanField(verbose_name="是否通讯作者")
 

@@ -1,0 +1,42 @@
+{% extends "teacher_app/base.html" %}
+{% block content %}
+
+<div class="d-flex gap-5">
+  <form method="POST" class="row row-cols-lg-auto g-3 align-items-center">
+    {% csrf_token %}
+    <div class="col">
+      <input class="form-control" type="search" placeholder="工号" name="id">
+    </div>
+    <button class="btn btn-success col" type="submit">搜索</button>
+  </form>
+
+</div>
+
+<a class="btn btn-primary mt-3" href="{% url 'teacher-add' %}" role="button">+ 添加教师</a>
+
+<table class="table text-center">
+  <thead>
+    <tr>
+      <th scope="col">工号</th>
+      <th scope="col">姓名</th>
+      <th scope="col">性别</th>
+      <th scope="col">职称</th>
+      <th scope="col">操作</th>
+    </tr>
+  </thead>
+
+    {% for teacher in teacher_list %}
+    <tr>
+      <td scope="row">{{ teacher.id }}</th>
+      <td>{{ teacher.name }}</td>
+      <td>{{ teacher.get_gender_display }}</td>
+      <td>{{ teacher.get_title_display }}</td>
+      <td>
+        <a class="btn btn-primary" href="{% url 'teacher-detail' teacher.id %}" role="button">详情</a>
+        <a class="btn btn-primary" href="#" role="button">工作统计</a>
+      </td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock content %}
