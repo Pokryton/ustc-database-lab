@@ -1,28 +1,12 @@
 {% extends "teacher_app/base.html" %}
 
-{% load django_bootstrap5 %}
-
 {% block content %}
 
-<div>
-  <h2>搜索条件</h2>
-  <form method="get">
-    <div class="row align-items-end">
-      {% for field in filter.form %}
-        {% bootstrap_field field wrapper_class="col my-2" server_side_validation=False %}
-      {% endfor %}
-      <div class="col my-2">
-        <button class="btn btn-success" type="submit">搜索</button>
-        <a role="button col my-2" class="btn btn-secondary" href="{% url "teacher-list" %}" >重置</a>
-      </div>
-    </div>
-  </form>
-</div>
+{% include "teacher_app/filter-accordion.html" %}
 
-<hr class="my-4">
+<hr>
 
 <div>
-  <h2>教师列表</h2>
   <a class="btn btn-outline-primary my-2" href="{% url 'teacher-add' %}" role="button">+ 添加教师</a>
 
   <table class="table text-center">
@@ -44,6 +28,7 @@
       <td>{{ teacher.get_title_display }}</td>
       <td>
         <a class="btn btn-primary" href="{% url "teacher-summary" teacher.id %}" role="button">工作统计</a>
+        <a class="btn btn-warning" href="{% url "teacher-update" teacher.id %}" role="button">更新</a>
       </td>
     </tr>
     {% endfor %}
