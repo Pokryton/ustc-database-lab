@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -80,13 +82,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        # "OPTIONS": {
-        #     "read_default_file": "~/my.cnf"
-        # },
-        # TODO
-        "NAME": "teacher_app",
-        "USER": "root",
-        "PASSWORD": "123456",
+        "NAME": os.environ.get("MYSQL_DATABASE") or "teacher_app",
+        "USER": os.environ.get("MYSQL_USER") or "root",
+        "PASSWORD": os.environ.get("MYSQL_PASSWORD") or "123456",
     }
 }
 
