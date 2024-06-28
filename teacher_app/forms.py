@@ -100,7 +100,7 @@ class BaseTeacherProjectFormSet(BaseInlineFormSet):
 
         if actual_fund != expected_fund:
             raise ValidationError(
-                f"教师承担经费总额 (${actual_fund}) 与项目总经费 (${expected_fund}) 不匹配"
+                f"教师承担经费总额 ({actual_fund}) 与项目总经费 ({expected_fund}) 不匹配"
             )
 
 

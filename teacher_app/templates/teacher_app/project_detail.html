@@ -11,8 +11,7 @@
       <th scope="col">项目来源</th>
       <th scope="col">项目类型</th>
       <th scope="col">总经费</th>
-      <th scope="col">开始年份</th>
-      <th scope="col">结束年份</th>
+      <th scope="col">年份</th>
     </tr>
   </thead>
 
@@ -23,8 +22,7 @@
       <td>{{ project.source }}</td>
       <td>{{ project.get_kind_display }}</td>
       <td>{{ project.total_fund }}</td>
-      <td>{{ project.start_year }}</td>
-      <td>{{ project.end_year }}</td>
+      <td>{{ project.start_year }}-{{ project.end_year }}</td>
     </tr>
   </tbody>
 </table>
