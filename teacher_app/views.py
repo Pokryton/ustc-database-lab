@@ -52,8 +52,9 @@ def teacher_delete(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
 
     try:
+        teacher_str = str(teacher)
         teacher.delete()
-        messages.success(request, f"教师 {teacher} 删除成功！")
+        messages.success(request, f"教师 {teacher_str} 删除成功！")
     except ProtectedError as e:
         messages.error(request, f"无法删除教师 {teacher}：存在关联数据")
 
