@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.db import transaction
+from django.views.decorators.http import require_http_methods
 
 from .models import *
 from .forms import *
@@ -60,36 +61,33 @@ def teacher_summary(request, pk):
             start_year = form.cleaned_data["start_year"]
             end_year = form.cleaned_data["end_year"]
 
-            try:
-                teachercourse_list = TeacherCourse.objects.filter(
-                    Q(teacher=teacher),
-                    Q(year__gte=start_year),
-                    Q(year__lte=end_year),
-                )
+            teachercourse_list = TeacherCourse.objects.filter(
+                Q(teacher=teacher),
+                Q(year__gte=start_year),
+                Q(year__lte=end_year),
+            )
 
-                teacherpaper_list = TeacherPaper.objects.filter(
-                    Q(teacher=teacher),
-                    Q(paper__pub_year__gte=start_year),
-                    Q(paper__pub_year__lte=end_year),
-                )
+            teacherpaper_list = TeacherPaper.objects.filter(
+                Q(teacher=teacher),
+                Q(paper__pub_year__gte=start_year),
+                Q(paper__pub_year__lte=end_year),
+            )
 
-                teacherproject_list = TeacherProject.objects.filter(
-                    Q(teacher=teacher),
-                    Q(project__start_year__lte=end_year),
-                    Q(project__end_year__gte=start_year),
-                )
+            teacherproject_list = TeacherProject.objects.filter(
+                Q(teacher=teacher),
+                Q(project__start_year__lte=end_year),
+                Q(project__end_year__gte=start_year),
+            )
 
-                context.update(
-                    {
-                        "start_year": start_year,
-                        "end_year": end_year,
-                        "teachercourse_list": teachercourse_list,
-                        "teacherpaper_list": teacherpaper_list,
-                        "teacherproject_list": teacherproject_list,
-                    }
-                )
-            except Exception as e:
-                messages.warning(request, f"数据错误 {e}")
+            context.update(
+                {
+                    "start_year": start_year,
+                    "end_year": end_year,
+                    "teachercourse_list": teachercourse_list,
+                    "teacherpaper_list": teacherpaper_list,
+                    "teacherproject_list": teacherproject_list,
+                }
+            )
 
     context["form"] = form
     return render(request, "teacher_app/teacher_summary.html", context)
@@ -157,16 +155,13 @@ def course_update(request, course_id):
     return render(request, "teacher_app/form.html", context)
 
 
+@require_http_methods(["POST"])
 def course_delete(request, course_id):
     course = get_object_or_404(Course, pk=course_id)
 
-    if request.POST:
-        course.delete()
-        messages.success(request, f"课程 {course.name} 删除成功！")
-        return redirect(reverse_lazy("course-list"))
-
-    context = {"object": course}
-    return render(request, "teacher_app/course_confirm_delete.html", context)
+    course.delete()
+    messages.success(request, f"课程 {course.name} 删除成功！")
+    return redirect(reverse_lazy("course-list"))
 
 
 def project_list(request):
@@ -237,16 +232,13 @@ def project_detail(request, project_id):
     return render(request, "teacher_app/project_detail.html", context)
 
 
+@require_http_methods(["POST"])
 def project_delete(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
 
-    if request.POST:
-        project.delete()
-        messages.success(request, f"项目 {project.name} 删除成功！")
-        return redirect(reverse_lazy("project-list"))
-
-    context = {"object": project, "detail": "project-detail"}
-    return render(request, "teacher_app/project_confirm_delete.html", context)
+    project.delete()
+    messages.success(request, f"项目 {project.name} 删除成功！")
+    return redirect(reverse_lazy("project-list"))
 
 
 def paper_list(request):
@@ -305,13 +297,10 @@ def paper_update(request, paper_id):
     return render(request, "teacher_app/form.html", context)
 
 
+@require_http_methods(["POST"])
 def paper_delete(request, paper_id):
     paper = get_object_or_404(Paper, pk=paper_id)
 
-    if request.POST:
-        paper.delete()
-        messages.success(request, f"论文《{paper.title}》删除成功！")
-        return redirect(reverse_lazy("paper-list"))
-
-    context = {"object": paper, "detail": "paper-detail"}
-    return render(request, "teacher_app/paper_confirm_delete.html", context)
+    paper.delete()
+    messages.success(request, f"论文《{paper.title}》删除成功！")
+    return redirect(reverse_lazy("paper-list"))

@@ -1,0 +1,33 @@
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        确认要删除<span id="object-name">...</span>吗？
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+        <form id="delete-modal-form" action="#" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">确定</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const deleteModal = document.getElementById("deleteModal")
+  if (deleteModal) {
+    deleteModal.addEventListener("show.bs.modal", event => {
+      const button = event.relatedTarget
+      const name = button.getAttribute("data-bs-name")
+      const href = button.getAttribute("data-bs-href")
+  
+      const objectName = deleteModal.querySelector("#object-name")
+      objectName.textContent = name
+
+      const modalForm = deleteModal.querySelector("#delete-modal-form")
+      modalForm.action = href
+    })
+  }
+</script>

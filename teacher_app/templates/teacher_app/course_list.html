@@ -29,10 +29,13 @@
         <td>
           <a role="button" class="btn btn-primary" href="{% url "course-detail" course.id %}" >详情</a>
           <a role="button" class="btn btn-warning" href="{% url "course-update" course.id %}" >更新</a>
-          <a role="button" class="btn btn-danger" href="{% url "course-delete" course.id %}" >删除</a>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-name="课程 {{ course }}" data-bs-href="{% url "course-delete" course.id %}">删除</button>
         </td>
       </tr>
       {% endfor %}
   </table>
 </div>
+
+{% include "teacher_app/delete-modal.html" %}
+
 {% endblock %}

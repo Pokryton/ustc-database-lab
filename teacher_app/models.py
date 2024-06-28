@@ -114,7 +114,7 @@ class Paper(models.Model):
         verbose_name = "论文"
 
     def __str__(self):
-        return f"{self.id} {self.title}"
+        return f"{self.id} 《{self.title}》"
 
 
 class TeacherCourse(models.Model):
@@ -141,9 +141,6 @@ class TeacherCourse(models.Model):
             ),
         ]
 
-    def __str__(self):
-        return f"{self.teacher.id} {self.course.id}"
-
 
 class TeacherProject(models.Model):
     teacher = models.ForeignKey(
@@ -168,9 +165,6 @@ class TeacherProject(models.Model):
                 violation_error_message="排名重复",
             ),
         ]
-
-    def __str__(self):
-        return f"{self.teacher.id} {self.project.id}"
 
 
 class TeacherPaper(models.Model):
@@ -200,6 +194,3 @@ class TeacherPaper(models.Model):
                 violation_error_message="一篇论文只能有一个通讯作者",
             ),
         ]
-
-    def __str__(self):
-        return f"{self.teacher.id} {self.paper.id}"
