@@ -302,7 +302,7 @@ def paper_update(request, paper_id):
 
     context = {
         "model": "paper",
-        "model_name": "项目",
+        "model_name": "论文",
         "form": form,
         "formset": formset,
     }
