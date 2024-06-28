@@ -1,4 +1,3 @@
-from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
@@ -11,7 +10,7 @@ from .filters import *
 
 
 def index(request):
-    return redirect(reverse_lazy("teacher-list"))
+    return redirect("teacher-list")
 
 
 def teacher_list(request):
@@ -27,7 +26,7 @@ def teacher_add(request):
         if form.is_valid():
             teacher = form.save()
             messages.success(request, f"教师 {teacher.name} 登记成功！")
-            return redirect("teacher")
+            return redirect("teacher-list")
 
     context = {"form": form}
     return render(request, "teacher_app/teacher_form.html", {"form": form})
@@ -43,7 +42,7 @@ def teacher_update(request, pk):
         if form.is_valid():
             teacher = form.save()
             messages.success(request, f"教师 {teacher.name} 更新成功！")
-            return redirect(reverse_lazy("teacher-list"))
+            return redirect("teacher-list")
 
     context = {"form": form}
     return render(request, "teacher_app/teacher_form.html", context)
@@ -120,7 +119,7 @@ def course_add(request):
                 course.save()
                 formset.save()
                 messages.success(request, f"课程 {course.name} 登记成功！")
-                return redirect(reverse_lazy("course-list"))
+                return redirect("course-list")
 
     context = {
         "model": "course",
@@ -144,7 +143,7 @@ def course_update(request, course_id):
             formset.instance = course
             formset.save()
             messages.success(request, f"课程 {course.name} 更新成功！")
-            return redirect(reverse_lazy("course-list"))
+            return redirect("course-list")
 
     context = {
         "model": "course",
@@ -161,7 +160,7 @@ def course_delete(request, course_id):
 
     course.delete()
     messages.success(request, f"课程 {course.name} 删除成功！")
-    return redirect(reverse_lazy("course-list"))
+    return redirect("course-list")
 
 
 def project_list(request):
@@ -191,7 +190,7 @@ def project_add(request):
                 project.save()
                 formset.save()
                 messages.success(request, f"项目 {project.name} 登记成功！")
-                return redirect(reverse_lazy("project-list"))
+                return redirect("project-list")
 
     context = {
         "model": "project",
@@ -215,7 +214,7 @@ def project_update(request, project_id):
             formset.instance = project
             formset.save()
             messages.success(request, f"项目 {project.name} 更新成功！")
-            return redirect(reverse_lazy("project-list"))
+            return redirect("project-list")
 
     context = {
         "model": "project",
@@ -238,7 +237,7 @@ def project_delete(request, project_id):
 
     project.delete()
     messages.success(request, f"项目 {project.name} 删除成功！")
-    return redirect(reverse_lazy("project-list"))
+    return redirect("project-list")
 
 
 def paper_list(request):
@@ -262,7 +261,7 @@ def paper_add(request):
                 paper.save()
                 formset.save()
                 messages.success(request, f"论文《{paper.title}》登记成功！")
-                return redirect(reverse_lazy("paper-list"))
+                return redirect("paper-list")
 
     context = {
         "model": "paper",
@@ -286,7 +285,7 @@ def paper_update(request, paper_id):
             formset.instance = paper
             formset.save()
             messages.success(request, f"论文《{paper.title}》更新成功！")
-            return redirect(reverse_lazy("paper-list"))
+            return redirect("paper-list")
 
     context = {
         "model": "paper",
@@ -303,4 +302,4 @@ def paper_delete(request, paper_id):
 
     paper.delete()
     messages.success(request, f"论文《{paper.title}》删除成功！")
-    return redirect(reverse_lazy("paper-list"))
+    return redirect("paper-list")
