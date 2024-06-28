@@ -13,24 +13,26 @@
 
       <div class="col-auto my-2">
         <div class="row g-2">
-          <div class="col"><button class="btn btn-success col" type="submit">搜索</button></div>
+          <div class="col"><button class="btn btn-success col" type="submit">生成</button></div>
           <div class="col"><a class="btn btn-primary col" href="javascript:self.print()">打印</a></div>
+          <div class="col"><a class="btn btn-secondary col" href="{% url "teacher-list" %}">返回</a></div>
         </div>
       </div>
     </div>
   </form>
 </div>
 
-<hr class="mb-5 boarder d-print-none">
+<hr class="mt-1 mb-5 boarder d-print-none">
 
 <style>
   @media print {
     body {
       font-size: smaller;
     }
-    hr {
-      margin: 0;
-    }
+  }
+
+  hr {
+    margin: 0;
   }
 
   ol {
@@ -40,7 +42,7 @@
 </style>
 
 <h5 class="d-flex justify-content-center">
-  教师教学科研工作统计{% if start_year %}（{{ start_year }}-{{ end_year }}）{% endif %}
+  教师教学科研工作统计{% if start_year is not None %}（{{ start_year }}-{{ end_year }}）{% endif %}
 </h5>
 
 <div class="my-4">
@@ -48,10 +50,7 @@
   <hr class="border border-black opacity-100">
 
   <div class="my-2">
-    工号：{{ teacher.id }} &emsp;
-    姓名：{{ teacher.name }} &emsp;
-    性别：{{ teacher.get_gender_display }} &emsp;
-    职称：{{ teacher.get_title_display }}
+    工号：{{ teacher.id }}&emsp;姓名：{{ teacher.name }}&emsp;性别：{{ teacher.get_gender_display }}&emsp;职称：{{ teacher.get_title_display }}
   </div>
 </div>
 
@@ -63,10 +62,7 @@
   <div class="my-2">
     {% for record in teachercourse_list %}
       <div>
-        课程号：{{ record.course.id }} &emsp;
-        课程名：{{ record.course.name }} &emsp;
-        主讲学时：{{ record.hours }} &emsp;
-        学期：{{ record.year }} {{ record.get_semester_display | first }}
+        课程号：{{ record.course.id }}&emsp;课程名：{{ record.course.name }}&emsp;主讲学时：{{ record.hours }}&emsp;学期：{{ record.year }} {{ record.get_semester_display | first }}
       </div>
     {% endfor %}
 </div>
@@ -80,7 +76,7 @@
   <ol class="my-2">
     {% for record in teacherpaper_list %}
       <li>
-        {{ record.paper.title }}，{{ record.paper.source }}，{{ record.paper.pub_year }}，{{ record.paper.get_level_display }}，排名第 {{ record.rank }} {% if record.corresp %}，通讯作者 {% endif %}
+        {{ record.paper.title }}，{{ record.paper.source }}，{{ record.paper.pub_year }}，{{ record.paper.get_level_display }}，排名第 {{ record.rank }}{% if record.corresp %}，通讯作者 {% endif %}
       </li>
     {% endfor %}
   </ol>
@@ -95,7 +91,7 @@
   <ol class="my-2">
     {% for record in teacherproject_list %}
       <li>
-        {{ record.project.name }}，{{ record.project.source }}，{{ record.project.get_kind_display }}，{{ record.project.start_year }}—{{ record.project.end_year }}，总经费 {{ record.project.total_fund }}，承担经费 {{ record.fund }}
+        {{ record.project.name }}，{{ record.project.source }}，{{ record.project.get_kind_display }}，{{ record.project.start_year }}-{{ record.project.end_year }}，总经费 {{ record.project.total_fund }}，承担经费 {{ record.fund }}
       </li>
     {% endfor %}
   </ol>
