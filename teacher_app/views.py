@@ -34,7 +34,7 @@ def teacher_add(request):
 def teacher_update(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
 
-    form = CourseForm(request.POST or None, instance=teacher)
+    form = TeacherForm(request.POST or None, instance=teacher)
     form.fields["id"].disabled = True
 
     if request.method == "POST":
