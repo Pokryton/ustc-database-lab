@@ -57,7 +57,7 @@ class BaseTeacherCourseFormSet(BaseInlineFormSet):
             if hours != expected_hours:
                 semester_name = TeacherCourse.SEMESTER_CHOICES[semester]
                 raise ValidationError(
-                    f"{year} 年{semester_name}授课总学时与课程学时不匹配"
+                    f"{year} 年{semester_name}授课总学时 ({hours}) 与课程学时 ({expected_hours}) 不匹配"
                 )
 
 
@@ -73,15 +73,7 @@ TeacherCourseFormSet = inlineformset_factory(
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        fields = [
-            "id",
-            "name",
-            "source",
-            "kind",
-            "total_fund",
-            "start_year",
-            "end_year",
-        ]
+        exclude = ["teacher"]
 
 
 class BaseTeacherProjectFormSet(BaseInlineFormSet):
@@ -107,7 +99,9 @@ class BaseTeacherProjectFormSet(BaseInlineFormSet):
             actual_fund += cleaned_data["fund"]
 
         if actual_fund != expected_fund:
-            raise ValidationError("教师承担经费总额与项目总经费不匹配")
+            raise ValidationError(
+                f"教师承担经费总额 (${actual_fund}) 与项目总经费 (${expected_fund}) 不匹配"
+            )
 
 
 TeacherProjectFormSet = inlineformset_factory(
