@@ -19,7 +19,7 @@ class TeacherForm(ModelForm):
 class CourseForm(ModelForm):
     class Meta:
         model = Course
-        fields = ["id", "name", "total_hours", "kind"]
+        exclude = ["teachers"]
 
 
 class BaseTeacherCourseFormSet(BaseInlineFormSet):
@@ -73,7 +73,7 @@ TeacherCourseFormSet = inlineformset_factory(
 class ProjectForm(ModelForm):
     class Meta:
         model = Project
-        exclude = ["teacher"]
+        exclude = ["teachers"]
 
 
 class BaseTeacherProjectFormSet(BaseInlineFormSet):
