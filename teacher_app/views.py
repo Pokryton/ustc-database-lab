@@ -1,7 +1,6 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
-from django.db import transaction
+from django.db.models import ProtectedError
 from django.views.decorators.http import require_http_methods
 
 from .models import *
@@ -46,6 +45,19 @@ def teacher_update(request, pk):
 
     context = {"form": form}
     return render(request, "teacher_app/teacher_form.html", context)
+
+
+@require_http_methods(["POST"])
+def teacher_delete(request, pk):
+    teacher = get_object_or_404(Teacher, pk=pk)
+
+    try:
+        teacher.delete()
+        messages.success(request, f"教师 {teacher} 删除成功！")
+    except ProtectedError as e:
+        messages.error(request, f"无法删除教师 {teacher}：存在关联数据")
+
+    return redirect("teacher-list")
 
 
 def teacher_summary(request, pk):
