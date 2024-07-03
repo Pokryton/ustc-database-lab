@@ -15,7 +15,7 @@
         <div class="row g-2">
           <div class="col"><button class="btn btn-success col" type="submit">生成</button></div>
           <div class="col"><a class="btn btn-primary col" href="javascript:self.print()">打印</a></div>
-          <div class="col"><a class="btn btn-secondary col" href="{% url "teacher-list" %}">返回</a></div>
+          <div class="col"><a class="btn btn-secondary col" href="{% url 'teacher-list' %}">返回</a></div>
         </div>
       </div>
     </div>
@@ -36,8 +36,11 @@
   }
 
   ol {
-    padding-left: 0;
-    list-style-position: inside;
+    padding-left: 0em;
+  }
+
+  ol li {
+    margin-left: 1em;
   }
 </style>
 
@@ -49,22 +52,32 @@
   <h6>教师基本信息</h6>
   <hr class="border border-black opacity-100">
 
-  <div class="my-2">
-    工号：{{ teacher.id }}&emsp;姓名：{{ teacher.name }}&emsp;性别：{{ teacher.get_gender_display }}&emsp;职称：{{ teacher.get_title_display }}
-  </div>
+
+  <ul class="my-2 list-inline">
+    <li class="list-inline-item me-3">工号：{{ teacher.id }}</li>
+    <li class="list-inline-item me-3">姓名：{{ teacher.name }}</li>
+    <li class="list-inline-item me-3">性别：{{ teacher.get_gender_display }}</li>
+    <li class="list-inline-item">职称：{{ teacher.get_title_display }}</li>
+  </ul>
 </div>
 
 {% if teachercourse_list %}
 <div class="my-4">
   <h6>教学情况</h6>
   <hr class="border border-black opacity-100">
-  
-  <div class="my-2">
+
+  <ul class="list-unstyled my-2">
     {% for record in teachercourse_list %}
-      <div>
-        课程号：{{ record.course.id }}&emsp;课程名：{{ record.course.name }}&emsp;主讲学时：{{ record.hours }}&emsp;学期：{{ record.year }} {{ record.get_semester_display | first }}
-      </div>
+      <li>
+        <ul class="list-inline">
+          <li class="list-inline-item me-3">课程号：{{ record.course.id }}</li>
+          <li class="list-inline-item me-3">课程名：{{ record.course.name }}</li>
+          <li class="list-inline-item me-3">主讲学时：{{ record.hours }}</li>
+          <li class="list-inline-item">学期：{{ record.year }} {{ record.get_semester_display | first }}</li>
+        </ul>
+      </li>
     {% endfor %}
+  </ul>
 </div>
 {% endif %}
 
