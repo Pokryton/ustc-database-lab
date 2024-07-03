@@ -9,7 +9,7 @@
 <div>
   <a class="btn btn-outline-primary my-2" href="{% url 'teacher-add' %}" role="button">+ 添加教师</a>
 
-  <table class="table text-center">
+  <table class="table table-hover text-center">
     <thead>
       <tr>
         <th scope="col">工号</th>
@@ -20,19 +20,21 @@
       </tr>
     </thead>
 
-    {% for teacher in teacher_list %}
-    <tr>
-      <td scope="row">{{ teacher.id }}</th>
-      <td>{{ teacher.name }}</td>
-      <td>{{ teacher.get_gender_display }}</td>
-      <td>{{ teacher.get_title_display }}</td>
-      <td>
-        <a class="btn btn-primary" href="{% url "teacher-summary" teacher.id %}" role="button">工作统计</a>
-        <a class="btn btn-warning" href="{% url "teacher-update" teacher.id %}" role="button">更新</a>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-name="教师 {{ teacher }}" data-bs-href="{% url "teacher-delete" teacher.id %}">删除</button>
-      </td>
-    </tr>
-    {% endfor %}
+    <tbody>
+      {% for teacher in teacher_list %}
+      <tr>
+        <td>{{ teacher.id }}</td>
+        <td>{{ teacher.name }}</td>
+        <td>{{ teacher.get_gender_display }}</td>
+        <td>{{ teacher.get_title_display }}</td>
+        <td>
+          <a class="btn btn-primary" href="{% url 'teacher-summary' teacher.id %}" role="button">工作统计</a>
+          <a class="btn btn-warning" href="{% url 'teacher-update' teacher.id %}" role="button">更新</a>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-name="教师 {{ teacher }}" data-bs-href="{% url 'teacher-delete' teacher.id %}">删除</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
 </div>
 

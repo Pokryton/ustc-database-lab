@@ -7,16 +7,16 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="nav navbar-nav ms-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'teacher-list' %}active{% endif %}" href="{% url "teacher-list" %}">教师</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'teacher-list' %}active{% endif %}" href="{% url 'teacher-list' %}">教师</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'course-list' %}active{% endif %}" href="{% url "course-list" %}">课程</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'course-list' %}active{% endif %}" href="{% url 'course-list' %}">课程</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'project-list' %}active{% endif %}" href="{% url "project-list" %}">项目</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'project-list' %}active{% endif %}" href="{% url 'project-list' %}">项目</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'paper-list' %}active{% endif %}" href="{% url "paper-list" %}">论文</a>
+          <a class="nav-link {% if request.resolver_match.url_name == 'paper-list' %}active{% endif %}" href="{% url 'paper-list' %}">论文</a>
         </li>
       </ul>
     </div>

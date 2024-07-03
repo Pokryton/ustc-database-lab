@@ -17,7 +17,7 @@
 
   <tbody>
     <tr>
-      <td scope="row">{{ paper.id }}</td>
+      <td>{{ paper.id }}</td>
       <td>{{ paper.title }}</td>
       <td>{{ paper.source }}</td>
       <td>{{ paper.pub_year }}</td>
@@ -37,7 +37,9 @@
       <th scope="col">排名</th>
       <th scope="col">是否通讯作者</th>
     </tr>
+  </thead>
 
+  <tbody>
     {% for record in paper.teacherpaper_set.all %}
     <tr>
       <td scope="col">{{ record.teacher.id }}</td>
@@ -46,7 +48,7 @@
       <td>{% if record.corresp %} 是 {% else %} - {% endif %}</td>
     </tr>
     {% endfor %}
-  </thead>
+  </tbody>
 </table>
 
 {% endblock content %}

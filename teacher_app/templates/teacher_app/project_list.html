@@ -7,9 +7,9 @@
 <hr>
 
 <div>
-  <a class="btn btn-outline-primary my-2" href="{% url "project-add" %}" role="button">+ 添加项目</a>
+  <a class="btn btn-outline-primary my-2" href="{% url 'project-add' %}" role="button">+ 添加项目</a>
 
-  <table class="table text-center">
+  <table class="table table-hover text-center">
     <thead>
       <tr>
         <th scope="col">项目号</th>
@@ -22,21 +22,23 @@
       </tr>
     </thead>
 
+    <tbody>
       {% for project in project_list %}
       <tr>
-        <td scope="row">{{ project.id }}</td>
+        <td>{{ project.id }}</td>
         <td>{{ project.name }}</td>
         <td>{{ project.source }}</td>
         <td>{{ project.get_kind_display }}</td>
         <td>{{ project.total_fund }}</td>
         <td>{{ project.start_year }}-{{ project.end_year }}</td>
         <td>
-          <a role="button" class="btn btn-primary" href="{% url "project-detail" project.id %}" >详情</a>
-          <a role="button" class="btn btn-warning" href="{% url "project-update" project.id %}" >更新</a>
-          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-name="项目 {{ project }}" data-bs-href="{% url "project-delete" project.id %}">删除</button>
+          <a role="button" class="btn btn-primary" href="{% url 'project-detail' project.id %}" >详情</a>
+          <a role="button" class="btn btn-warning" href="{% url 'project-update' project.id %}" >更新</a>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-name="项目 {{ project }}" data-bs-href="{% url 'project-delete' project.id %}">删除</button>
         </td>
       </tr>
       {% endfor %}
+    </tbody>
   </table>
 </div>
 

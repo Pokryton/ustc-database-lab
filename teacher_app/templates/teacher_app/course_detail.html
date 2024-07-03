@@ -13,12 +13,14 @@
     </tr>
   </thead>
 
-  <tr>
-    <td scope="row">{{ course.id }}</th>
-    <td>{{ course.name }}</td>
-    <td>{{ course.total_hours }}</td>
-    <td>{{ course.get_kind_display }}</td>
-  </tr>
+  <tbody>
+    <tr>
+      <td scope="row">{{ course.id }}</td>
+      <td>{{ course.name }}</td>
+      <td>{{ course.total_hours }}</td>
+      <td>{{ course.get_kind_display }}</td>
+    </tr>
+  </tbody>
 </table>
 
 <h2>授课教师</h2>
@@ -32,17 +34,19 @@
       <th scope="col">授课学期</th>
       <th scope="col">学时数</th>
     </tr>
-
-    {% for record in course.teachercourse_set.all %}
-    <tr>
-      <td scope="col">{{ record.teacher.id }}</td>
-      <td>{{ record.teacher.name }}</td>
-      <td>{{ record.year }}</td>
-      <td>{{ record.get_semester_display }}</td>
-      <td>{{ record.hours }}</td>
-    </tr>
-    {% endfor %}
   </thead>
+
+  <tbody>
+    {% for record in course.teachercourse_set.all %}
+      <tr>
+        <td>{{ record.teacher.id }}</td>
+        <td>{{ record.teacher.name }}</td>
+        <td>{{ record.year }}</td>
+        <td>{{ record.get_semester_display }}</td>
+        <td>{{ record.hours }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
 </table>
 
 {% endblock content %}

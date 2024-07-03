@@ -37,7 +37,9 @@
       <th scope="col">排名</th>
       <th scope="col">承担经费</th>
     </tr>
+  </thead>
 
+  <tbody>
     {% for record in project.teacherproject_set.all %}
     <tr>
       <td scope="col">{{ record.teacher.id }}</td>
@@ -46,7 +48,7 @@
       <td>{{ record.fund }}</td>
     </tr>
     {% endfor %}
-  </thead>
+  </tbody>
 </table>
 
 {% endblock content %}
