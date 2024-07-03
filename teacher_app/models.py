@@ -114,7 +114,7 @@ class Paper(models.Model):
         verbose_name = "论文"
 
     def __str__(self):
-        return f"{self.id} 《{self.title}》"
+        return f"{self.id}《{self.title}》"
 
 
 class TeacherCourse(models.Model):

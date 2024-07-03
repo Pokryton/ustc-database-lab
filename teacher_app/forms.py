@@ -28,7 +28,7 @@ class BaseTeacherCourseFormSet(BaseInlineFormSet):
         if any(self.errors):
             return
 
-        if not hasattr(self.instance, "total_hours"):
+        if not hasattr(self.instance, "total_hours") or self.instance.total_hours is None:
             raise ValidationError("未指定课程总学时")
 
         expected_hours = self.instance.total_hours
@@ -82,7 +82,7 @@ class BaseTeacherProjectFormSet(BaseInlineFormSet):
         if any(self.errors):
             return
 
-        if not hasattr(self.instance, "total_fund"):
+        if not hasattr(self.instance, "total_fund") or self.instance.total_fund is None:
             raise ValidationError("未指定项目总经费")
 
         expected_fund = self.instance.total_fund
@@ -126,7 +126,6 @@ class BaseTeacherPaperFormSet(BaseInlineFormSet):
             return
 
         has_corresp = False
-
         for form in self.forms:
             if self.can_delete and self._should_delete_form(form):
                 continue

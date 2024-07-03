@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.db.models import ProtectedError
+from django.views import View
 from django.views.decorators.http import require_http_methods
 
-from .models import *
 from .forms import *
 from .filters import *
 
@@ -28,12 +28,11 @@ def teacher_add(request):
             return redirect("teacher-list")
 
     context = {"form": form}
-    return render(request, "teacher_app/teacher_form.html", {"form": form})
+    return render(request, "teacher_app/teacher_form.html", context)
 
 
 def teacher_update(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
-
     form = TeacherForm(request.POST or None, instance=teacher)
     form.fields["id"].disabled = True
 
@@ -52,10 +51,10 @@ def teacher_delete(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
 
     try:
-        teacher_str = str(teacher)
+        s = str(teacher)
         teacher.delete()
-        messages.success(request, f"教师 {teacher_str} 删除成功！")
-    except ProtectedError as e:
+        messages.success(request, f"教师 {s} 删除成功！")
+    except ProtectedError:
         messages.error(request, f"无法删除教师 {teacher}：存在关联数据")
 
     return redirect("teacher-list")
@@ -63,9 +62,8 @@ def teacher_delete(request, pk):
 
 def teacher_summary(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)
-
-    context = {"teacher": teacher}
     form = YearRangeForm(request.GET or None)
+    context = {"teacher": teacher}
 
     if request.GET:
         form = YearRangeForm(request.GET)
@@ -113,66 +111,115 @@ def course_list(request):
     return render(request, "teacher_app/course_list.html", context)
 
 
-def course_detail(request, course_id):
-    course = get_object_or_404(Course, pk=course_id)
+class CreateWithInlinesView(View):
+    model = None
+    form_class = None
+    formset_class = None
+    template_name = "teacher_app/form_with_inlines.html"
+    success_redirect = None
+
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        formset = self.formset_class()
+        context = {
+            "model_name": self.model._meta.verbose_name,
+            "form": form,
+            "formset": formset
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        formset = self.formset_class(request.POST)
+
+        model_name = self.model._meta.verbose_name
+
+        if form.is_valid():
+            object = form.save(commit=False)
+            formset.instance = object
+
+            if formset.is_valid():
+                object.save()
+                formset.save()
+                messages.success(request, f"{model_name} {object} 登记成功！")
+                return redirect(self.success_redirect)
+
+        context = {
+            "model_name": model_name,
+            "form": form,
+            "formset": formset
+        }
+        return render(request, self.template_name, context)
+
+
+class UpdateWithInlinesView(View):
+    model = None
+    form_class = None
+    formset_class = None
+    template_name = "teacher_app/form_with_inlines.html"
+    success_redirect = None
+
+    def get(self, request, *args, **kwargs):
+        object = get_object_or_404(self.model, pk=kwargs.get("pk"))
+        form = self.form_class(instance=object)
+        form.fields["id"].disabled = True
+        formset = self.formset_class(instance=object)
+
+        context = {
+            "model_name": self.model._meta.verbose_name,
+            "form": form,
+            "formset": formset
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        object = get_object_or_404(self.model, pk=kwargs.get("pk"))
+        form = CourseForm(request.POST, instance=object)
+        form.fields["id"].disabled = True
+        formset = TeacherCourseFormSet(request.POST, instance=object)
+
+        model_name = self.model._meta.verbose_name
+
+        if form.is_valid() and formset.is_valid():
+            formset.instance = form.save()
+            formset.save()
+            messages.success(request, f"{model_name} {object} 更新成功！")
+            return redirect(self.success_redirect)
+
+        context = {
+            "model_name": model_name,
+            "form": form,
+            "formset": formset,
+        }
+        return render(request, "teacher_app/form_with_inlines.html", context)
+
+
+def course_detail(request, pk):
+    course = get_object_or_404(Course, pk=pk)
     context = {"course": course}
     return render(request, "teacher_app/course_detail.html", context)
 
 
-def course_add(request):
-    form = CourseForm(request.POST or None)
-    formset = TeacherCourseFormSet(request.POST or None)
-
-    if request.method == "POST":
-        if form.is_valid():
-            course = form.save(commit=False)
-            formset.instance = course
-
-            if formset.is_valid():
-                course.save()
-                formset.save()
-                messages.success(request, f"课程 {course.name} 登记成功！")
-                return redirect("course-list")
-
-    context = {
-        "model": "course",
-        "model_name": "课程",
-        "form": form,
-        "formset": formset,
-    }
-    return render(request, "teacher_app/form.html", context)
+class CourseCreateView(CreateWithInlinesView):
+    model = Course
+    form_class = CourseForm
+    formset_class = TeacherCourseFormSet
+    success_redirect = "course-list"
 
 
-def course_update(request, course_id):
-    course = get_object_or_404(Course, pk=course_id)
-
-    form = CourseForm(request.POST or None, instance=course)
-    form.fields["id"].disabled = True
-    formset = TeacherCourseFormSet(request.POST or None, instance=course)
-
-    if request.method == "POST":
-        if form.is_valid() and formset.is_valid():
-            course = form.save()
-            formset.instance = course
-            formset.save()
-            messages.success(request, f"课程 {course.name} 更新成功！")
-            return redirect("course-list")
-
-    context = {
-        "model": "course",
-        "model_name": "课程",
-        "form": form,
-        "formset": formset,
-    }
-    return render(request, "teacher_app/form.html", context)
+class CourseUpdateView(UpdateWithInlinesView):
+    model = Course
+    form_class = CourseForm
+    formset_class = TeacherCourseFormSet
+    success_redirect = "course-list"
 
 
 @require_http_methods(["POST"])
-def course_delete(request, course_id):
-    course = get_object_or_404(Course, pk=course_id)
-
+def course_delete(request, pk):
+    course = get_object_or_404(Course, pk=pk)
+    s = str(course)
     course.delete()
-    messages.success(request, f"课程 {course.name} 删除成功！")
+    messages.success(request, f"课程 {s} 删除成功！")
     return redirect("course-list")
 
 
@@ -184,72 +231,38 @@ def project_list(request):
     return render(request, "teacher_app/project_list.html", context)
 
 
-def paper_detail(request, paper_id):
-    paper = get_object_or_404(Paper, pk=paper_id)
+def paper_detail(request, pk):
+    paper = get_object_or_404(Paper, pk=pk)
     context = {"paper": paper}
     return render(request, "teacher_app/paper_detail.html", context)
 
 
-def project_add(request):
-    form = ProjectForm(request.POST or None)
-    formset = TeacherProjectFormSet(request.POST or None)
-
-    if request.method == "POST":
-        if form.is_valid():
-            project = form.save(commit=False)
-            formset.instance = project
-
-            if formset.is_valid():
-                project.save()
-                formset.save()
-                messages.success(request, f"项目 {project.name} 登记成功！")
-                return redirect("project-list")
-
-    context = {
-        "model": "project",
-        "model_name": "项目",
-        "form": form,
-        "formset": formset,
-    }
-    return render(request, "teacher_app/form.html", context)
+class ProjectCreateView(CreateWithInlinesView):
+    model = Project
+    form_class = ProjectForm
+    formset_class = TeacherProjectFormSet
+    success_redirect = "project-list"
 
 
-def project_update(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-
-    form = ProjectForm(request.POST or None, instance=project)
-    form.fields["id"].disabled = True
-    formset = TeacherProjectFormSet(request.POST or None, instance=project)
-
-    if request.method == "POST":
-        if form.is_valid() and formset.is_valid():
-            project = form.save()
-            formset.instance = project
-            formset.save()
-            messages.success(request, f"项目 {project.name} 更新成功！")
-            return redirect("project-list")
-
-    context = {
-        "model": "project",
-        "model_name": "项目",
-        "form": form,
-        "formset": formset,
-    }
-    return render(request, "teacher_app/form.html", context)
+class ProjectUpdateView(UpdateWithInlinesView):
+    model = Project
+    form_class = ProjectForm
+    formset_class = TeacherProjectFormSet
+    success_redirect = "project-list"
 
 
-def project_detail(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
+def project_detail(request, pk):
+    project = get_object_or_404(Project, pk=pk)
     context = {"project": project}
     return render(request, "teacher_app/project_detail.html", context)
 
 
 @require_http_methods(["POST"])
-def project_delete(request, project_id):
-    project = get_object_or_404(Project, pk=project_id)
-
+def project_delete(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    s = str(project)
     project.delete()
-    messages.success(request, f"项目 {project.name} 删除成功！")
+    messages.success(request, f"项目 {s} 删除成功！")
     return redirect("project-list")
 
 
@@ -257,62 +270,27 @@ def paper_list(request):
     filter = PaperFilter(request.GET or None, queryset=Paper.objects.all())
     paper_list = filter.qs.distinct()
     context = {"filter": filter, "paper_list": paper_list}
-
     return render(request, "teacher_app/paper_list.html", context)
 
 
-def paper_add(request):
-    form = PaperForm(request.POST or None)
-    formset = TeacherPaperFormSet(request.POST or None)
-
-    if request.method == "POST":
-        if form.is_valid():
-            paper = form.save(commit=False)
-            formset.instance = paper
-
-            if formset.is_valid():
-                paper.save()
-                formset.save()
-                messages.success(request, f"论文《{paper.title}》登记成功！")
-                return redirect("paper-list")
-
-    context = {
-        "model": "paper",
-        "model_name": "论文",
-        "form": form,
-        "formset": formset,
-    }
-    return render(request, "teacher_app/form.html", context)
+class PaperCreateView(CreateWithInlinesView):
+    model = Paper
+    form_class = PaperForm
+    formset_class = TeacherPaperFormSet
+    success_redirect = "paper-list"
 
 
-def paper_update(request, paper_id):
-    paper = get_object_or_404(Paper, pk=paper_id)
-
-    form = PaperForm(request.POST or None, instance=paper)
-    form.fields["id"].disabled = True
-    formset = TeacherPaperFormSet(request.POST or None, instance=paper)
-
-    if request.method == "POST":
-        if form.is_valid() and formset.is_valid():
-            paper = form.save()
-            formset.instance = paper
-            formset.save()
-            messages.success(request, f"论文《{paper.title}》更新成功！")
-            return redirect("paper-list")
-
-    context = {
-        "model": "paper",
-        "model_name": "论文",
-        "form": form,
-        "formset": formset,
-    }
-    return render(request, "teacher_app/form.html", context)
+class PaperUpdateView(UpdateWithInlinesView):
+    model = Paper
+    form_class = PaperForm
+    formset_class = TeacherPaperFormSet
+    success_redirect = "paper-list"
 
 
 @require_http_methods(["POST"])
-def paper_delete(request, paper_id):
-    paper = get_object_or_404(Paper, pk=paper_id)
-
+def paper_delete(request, pk):
+    paper = get_object_or_404(Paper, pk=pk)
+    s = str(paper)
     paper.delete()
-    messages.success(request, f"论文《{paper.title}》删除成功！")
+    messages.success(request, f"论文 {s} 删除成功！")
     return redirect("paper-list")
