@@ -1,0 +1,29 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    command: sh -c "/app/manage.py migrate && /app/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_NAME: teacher_app
+      DATABASE_USER: teacher_app
+      DATABASE_PASSWORD: teacher_app
+      DATABASE_HOST: db
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: teacher_app
+      MYSQL_USER: teacher_app
+      MYSQL_PASSWORD: teacher_app
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
