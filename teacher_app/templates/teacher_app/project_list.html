@@ -1,9 +1,7 @@
 {% extends "teacher_app/base.html" %}
-
 {% block content %}
 
 {% include "teacher_app/filter_accordion.html" %}
-
 <hr>
 
 <div>
@@ -11,19 +9,19 @@
 
   <table class="table table-hover text-center">
     <thead>
-      <tr>
-        <th scope="col">项目号</th>
-        <th scope="col">项目名称</th>
-        <th scope="col">项目来源</th>
-        <th scope="col">项目类型</th>
-        <th scope="col">总经费</th>
-        <th scope="col">年份</th>
-        <th scope="col">操作</th>
-      </tr>
+    <tr>
+      <th scope="col">项目号</th>
+      <th scope="col">项目名称</th>
+      <th scope="col">项目来源</th>
+      <th scope="col">项目类型</th>
+      <th scope="col">总经费</th>
+      <th scope="col">年份</th>
+      <th scope="col">操作</th>
+    </tr>
     </thead>
 
     <tbody>
-      {% for project in project_list %}
+    {% for project in project_list %}
       <tr>
         <td>{{ project.id }}</td>
         <td>{{ project.name }}</td>
@@ -32,12 +30,14 @@
         <td>{{ project.total_fund }}</td>
         <td>{{ project.start_year }}-{{ project.end_year }}</td>
         <td>
-          <a role="button" class="btn btn-primary" href="{% url 'project-detail' project.id %}" >详情</a>
-          <a role="button" class="btn btn-warning" href="{% url 'project-update' project.id %}" >更新</a>
-          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-name="项目 {{ project }}" data-bs-href="{% url 'project-delete' project.id %}">删除</button>
+          <a role="button" class="btn btn-primary" href="{% url 'project-detail' project.id %}">详情</a>
+          <a role="button" class="btn btn-warning" href="{% url 'project-update' project.id %}">更新</a>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                  data-bs-name="项目 {{ project }}" data-bs-href="{% url 'project-delete' project.id %}">删除
+          </button>
         </td>
       </tr>
-      {% endfor %}
+    {% endfor %}
     </tbody>
   </table>
 </div>

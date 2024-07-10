@@ -5,25 +5,25 @@
 
 <table class="table text-center">
   <thead>
-    <tr>
-      <th scope="col">项目号</th>
-      <th scope="col">项目名称</th>
-      <th scope="col">项目来源</th>
-      <th scope="col">项目类型</th>
-      <th scope="col">总经费</th>
-      <th scope="col">年份</th>
-    </tr>
+  <tr>
+    <th scope="col">项目号</th>
+    <th scope="col">项目名称</th>
+    <th scope="col">项目来源</th>
+    <th scope="col">项目类型</th>
+    <th scope="col">总经费</th>
+    <th scope="col">年份</th>
+  </tr>
   </thead>
 
   <tbody>
-    <tr>
-      <td scope="row">{{ project.id }}</td>
-      <td>{{ project.name }}</td>
-      <td>{{ project.source }}</td>
-      <td>{{ project.get_kind_display }}</td>
-      <td>{{ project.total_fund }}</td>
-      <td>{{ project.start_year }}-{{ project.end_year }}</td>
-    </tr>
+  <tr>
+    <td scope="row">{{ project.id }}</td>
+    <td>{{ project.name }}</td>
+    <td>{{ project.source }}</td>
+    <td>{{ project.get_kind_display }}</td>
+    <td>{{ project.total_fund }}</td>
+    <td>{{ project.start_year }}-{{ project.end_year }}</td>
+  </tr>
   </tbody>
 </table>
 
@@ -31,23 +31,23 @@
 
 <table class="table text-center">
   <thead>
-    <tr>
-      <th scope="col">职工号</th>
-      <th scope="col">姓名</th>
-      <th scope="col">排名</th>
-      <th scope="col">承担经费</th>
-    </tr>
+  <tr>
+    <th scope="col">职工号</th>
+    <th scope="col">姓名</th>
+    <th scope="col">排名</th>
+    <th scope="col">承担经费</th>
+  </tr>
   </thead>
 
   <tbody>
-    {% for record in project.teacherproject_set.all %}
+  {% for record in project.teacherproject_set.all %}
     <tr>
       <td scope="col">{{ record.teacher.id }}</td>
       <td>{{ record.teacher.name }}</td>
       <td>{{ record.rank }}</td>
       <td>{{ record.fund }}</td>
     </tr>
-    {% endfor %}
+  {% endfor %}
   </tbody>
 </table>
 

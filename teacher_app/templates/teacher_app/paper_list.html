@@ -1,9 +1,7 @@
 {% extends "teacher_app/base.html" %}
-
 {% block content %}
 
 {% include "teacher_app/filter_accordion.html" %}
-
 <hr>
 
 <div>
@@ -11,19 +9,19 @@
 
   <table class="table table-hover text-center">
     <thead>
-      <tr>
-        <th scope="col">序号</th>
-        <th scope="col">论文名称</th>
-        <th scope="col">发表源</th>
-        <th scope="col">发表年份</th>
-        <th scope="col">类型</th>
-        <th scope="col">级别</th>
-        <th scope="col">操作</th>
-      </tr>
+    <tr>
+      <th scope="col">序号</th>
+      <th scope="col">论文名称</th>
+      <th scope="col">发表源</th>
+      <th scope="col">发表年份</th>
+      <th scope="col">类型</th>
+      <th scope="col">级别</th>
+      <th scope="col">操作</th>
+    </tr>
     </thead>
 
     <tbody>
-      {% for paper in paper_list %}
+    {% for paper in paper_list %}
       <tr>
         <td>{{ paper.id }}</td>
         <td>{{ paper.title }}</td>
@@ -32,12 +30,14 @@
         <td>{{ paper.get_kind_display }}</td>
         <td>{{ paper.get_level_display }}</td>
         <td>
-          <a role="button" class="btn btn-primary" href="{% url 'paper-detail' paper.id %}" >详情</a>
-          <a role="button" class="btn btn-warning" href="{% url 'paper-update' paper.id %}" >更新</a>
-          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-bs-name="论文 {{ paper }}" data-bs-href="{% url 'paper-delete' paper.id %}">删除</button>
+          <a role="button" class="btn btn-primary" href="{% url 'paper-detail' paper.id %}">详情</a>
+          <a role="button" class="btn btn-warning" href="{% url 'paper-update' paper.id %}">更新</a>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                  data-bs-name="论文 {{ paper }}" data-bs-href="{% url 'paper-delete' paper.id %}">删除
+          </button>
         </td>
       </tr>
-      {% endfor %}
+    {% endfor %}
     </tbody>
   </table>
 </div>

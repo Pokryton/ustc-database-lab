@@ -6,8 +6,7 @@
 <form method="POST">
   {% csrf_token %}
 
-  <h3>{{model_name}}信息</h3>
-
+  <h3>{{ model_name }}信息</h3>
   <div class="mt-3">
     {% bootstrap_form form layout="horizontal" %}
   </div>
@@ -15,41 +14,39 @@
   <hr>
 
   <h3>教师列表</h3>
-
   <table class="table table-hover my-3" id="formset">
     {{ formset.management_form }}
-
     <thead>
-      <tr>
-        {% for field in formset.empty_form.visible_fields %}
-          <th>{{ field.label }}</th>
-        {% endfor %}
-      </tr>
+    <tr>
+      {% for field in formset.empty_form.visible_fields %}
+        <th scope="col">{{ field.label }}</th>
+      {% endfor %}
+    </tr>
     </thead>
     <tbody>
-      {% for form in formset.forms %}
-        <tr>
-          {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-          {% endfor %}
-          {% for field in form.visible_fields %}
-            <td>
-              {% bootstrap_field field wrapper_class="my-1" show_label=False %}
-            </td>
-          {% endfor %}
-        </tr>
-      {% endfor %}
-
-      <tr hidden>
-        {% for hidden in formset.empty_form.hidden_fields %}
+    {% for form in formset.forms %}
+      <tr>
+        {% for hidden in form.hidden_fields %}
           {{ hidden }}
         {% endfor %}
-        {% for field in formset.empty_form.visible_fields %}
+        {% for field in form.visible_fields %}
           <td>
             {% bootstrap_field field wrapper_class="my-1" show_label=False %}
           </td>
         {% endfor %}
       </tr>
+    {% endfor %}
+
+    <tr hidden>
+      {% for hidden in formset.empty_form.hidden_fields %}
+        {{ hidden }}
+      {% endfor %}
+      {% for field in formset.empty_form.visible_fields %}
+        <td>
+          {% bootstrap_field field wrapper_class="my-1" show_label=False %}
+        </td>
+      {% endfor %}
+    </tr>
     </tbody>
   </table>
 
